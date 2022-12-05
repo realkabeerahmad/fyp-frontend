@@ -1,0 +1,63 @@
+.App {
+  height: 100%;
+  width: 100%;
+}
+.btn {
+  background-color: #e92e4a;
+  color: white;
+  border-radius: 5px;
+  -webkit-border-radius: 5px;
+  -moz-border-radius: 5px;
+  -ms-border-radius: 5px;
+  -o-border-radius: 5px;
+  width: 75px;
+  height: 25px;
+  margin: 5px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+}
+.fa-times {
+  color: #a2a2a2 !important;
+  cursor: pointer;
+}
+.NA {
+  height: 150px;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #e92e4a;
+  font-weight: 700;
+}
+.delete-btn-t {
+  color: #e92e4a;
+  cursor: pointer;
+  font-size: 15px;
+}
+.del-btn:hover {
+  color: #e92e4a;
+}
+/* Chrome, Safari, Edge, Opera */
+input.quantity::-webkit-outer-spin-button,
+input.quantity::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+/* Firefox */
+input.quantity[type="number"] {
+  -moz-appearance: textfield;
+  text-align: center;
+  border: 1px solid #e92e4a;
+  padding: 5px;
+  border-radius: 5px;
+  -webkit-border-radius: 5px;
+  -moz-border-radius: 5px;
+  -ms-border-radius: 5px;
+  -o-border-radius: 5px;
+}
+.PaymentForm input {
+  border: 1px solid #c2c2c2;
+}

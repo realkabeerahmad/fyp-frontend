@@ -1,0 +1,34 @@
+.shop {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.shopRow {
+  width: 90%;
+}
+.shop-search {
+  display: flex;
+  justify-self: center;
+  align-self: center;
+  align-items: center;
+  justify-content: center;
+  width: 50%;
+}
+
+.shop-search button {
+  height: 56px;
+  width: 56px;
+  z-index: 1;
+  margin-left: -2px;
+  border-bottom-right-radius: 5px;
+  border-top-right-radius: 5px;
+  color: white;
+  background-color: #e92e4a;
+}
+.shop-nav {
+  display: flex;
+  align-items: center;
+  padding: 0px 80px;
+  margin: 0;
+}

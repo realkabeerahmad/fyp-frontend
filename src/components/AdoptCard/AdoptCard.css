@@ -1,0 +1,57 @@
+.petAdoptionCard {
+  width: 49%;
+  min-width: 260px;
+  height: 300px;
+  background-color: white;
+  box-shadow: 0 2px 4px #0000001a, 0 8px 16px #0000001a;
+  margin: 5px;
+  border-radius: 5px;
+  -webkit-border-radius: 5px;
+  -moz-border-radius: 5px;
+  -ms-border-radius: 5px;
+  -o-border-radius: 5px;
+}
+.pet-adopt {
+  display: flex;
+  flex-direction: row;
+  width: 100%;
+  height: 100%;
+}
+.pet-adopt-left {
+  height: 100%;
+  width: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 10px;
+  border-right: 1px solid #c2c2c2;
+  background-color: #00000010;
+  border-radius: 5px;
+  -webkit-border-radius: 5px;
+  -moz-border-radius: 5px;
+  -ms-border-radius: 5px;
+  -o-border-radius: 5px;
+  contain: content;
+}
+.pet-adopt-left > img {
+  width: 100%;
+}
+.pet-adopt-right {
+  padding: 20px;
+  width: 50%;
+}
+.pet-info-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  color: grey;
+  margin-bottom: 20px;
+}
+.pet-info > .description {
+  color: rgb(184, 184, 184);
+}
+.PetCardWrap {
+  text-decoration: none !important;
+  color: inherit;
+  cursor: pointer;
+}

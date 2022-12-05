@@ -1,0 +1,32 @@
+.mypets {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+}
+.mypets a {
+  color: #929292 !important;
+  transition: color 0.3s;
+  -webkit-transition: color 0.3s;
+  -moz-transition: color 0.3s;
+  -ms-transition: color 0.3s;
+  -o-transition: color 0.3s;
+}
+.mypets a:hover {
+  color: #e92e4a !important;
+}
+.add-pet-btn {
+  width: 500px;
+  padding: 10px;
+  margin: 10px;
+  text-align: center;
+  border-radius: 10px;
+  -webkit-border-radius: 10px;
+  -moz-border-radius: 10px;
+  -ms-border-radius: 10px;
+  -o-border-radius: 10px;
+  background-color: white;
+  box-shadow: 0 2px 4px #0000001a, 0 8px 16px #0000001a;
+  -webkit-box-shadow: 0 2px 4px #0000001a, 0 8px 16px #0000001a;
+  -moz-box-shadow: 0 2px 4px #0000001a, 0 8px 16px #0000001a;
+}
