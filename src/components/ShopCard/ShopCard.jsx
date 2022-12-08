@@ -7,7 +7,7 @@ import "./ShopCard.css";
 
 const ShopCard = ({ Product, setProduct }) => {
   const { _id, name, Image, quantity, price } = Product;
-  const serverBaseURL = "http://localhost:8000";
+  // const serverBaseURL = "http://localhost:8000/";
 
   function setShopDetails() {
     setProduct(Product);

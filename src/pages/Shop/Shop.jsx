@@ -23,13 +23,17 @@ import {
 // ----------------------------------------------------------
 
 const Shop = ({ setProduct }) => {
+  const [values, setValues] = useState({
+    text: "",
+  });
+  // ----------------------------------
   const [state, setState] = useState({
     top: false,
     left: false,
     bottom: false,
     right: false,
   });
-
+  // ------------------------------------
   const toggleDrawer = (anchor, open) => (event) => {
     if (
       event &&
@@ -41,11 +45,12 @@ const Shop = ({ setProduct }) => {
 
     setState({ ...state, [anchor]: open });
   };
-
+  // -------------------------------------
   const [Products, setProducts] = useState([]);
   useEffect(() => {
     fetchItem();
   }, []);
+  // ----------------------------------------
   const fetchItem = () => {
     axios
       .get("http://localhost:8000/shop/showAllProducts")
@@ -57,6 +62,29 @@ const Shop = ({ setProduct }) => {
         console.log(err);
       });
   };
+  // ------------------------------------
+  const searchItem = () => {
+    if (!values.text) {
+      return false;
+    } else {
+      const data = { searched_text: values.text };
+      axios
+        .post("http://localhost:8000/shop/search", data)
+        .then((res) => {
+          console.log(res.data.products);
+          setProducts(res.data.products);
+          // setValues({ text: "" });
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+    }
+  };
+  // -------------------------------------
+  const handleChange = (value) => (e) => {
+    setValues({ ...values, [value]: e.target.value });
+  };
+  // -------------------------------------
   return (
     <>
       <Box
@@ -151,11 +179,14 @@ const Shop = ({ setProduct }) => {
             }}
             type="text"
             placeholder="Search"
+            onChange={handleChange("text")}
+            value={values.text}
           />
           <Button
             color="error"
             variant="contained"
             sx={{ width: 50, ml: "-65px" }}
+            onClick={searchItem}
           >
             <Search />
           </Button>
@@ -185,11 +216,18 @@ const Shop = ({ setProduct }) => {
               justifyContent: "center",
             }}
           >
-            {Products.map((Product) => {
-              return (
-                <ShopCard Product={Product} setProduct={setProduct}></ShopCard>
-              );
-            })}
+            {Products.length > 0 ? (
+              Products.map((Product) => {
+                return (
+                  <ShopCard
+                    Product={Product}
+                    setProduct={setProduct}
+                  ></ShopCard>
+                );
+              })
+            ) : (
+              <>No Product Found</>
+            )}
           </Box>
         </Box>
       </Box>
