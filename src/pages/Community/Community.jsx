@@ -2,8 +2,11 @@ import { AddCircle } from "@mui/icons-material";
 import { Box, Button, TextField } from "@mui/material";
 import React, { useEffect, useState } from "react";
 import axios from "axios";
+import { LoadingButton } from "@mui/lab";
+import Post from "../../components/Post/Post";
 const Community = ({ user }) => {
   const [posts, setPosts] = useState([]);
+  const [loading, setLoading] = useState(false);
   const [values, setValues] = useState({
     userId: user ? user._id : "",
     name: user ? user.firstName + " " + user.lastName : "",
@@ -14,18 +17,22 @@ const Community = ({ user }) => {
     setValues({ ...values, [value]: e.target.value });
   };
   const addPost = () => {
+    setLoading(true)
     if (!user._id) {
       alert("Please Login");
+      setLoading(false)
       return false;
     } else {
       axios
-        .post("http://localhost:8000/community/addPost", values)
-        .then((res) => {
-          alert(res.data.message);
-          fetchPosts();
-        })
-        .catch((err) => {
-          console.log(err);
+      .post("http://localhost:8000/community/addPost", values)
+      .then((res) => {
+        alert(res.data.message);
+        fetchPosts();
+        setLoading(false)
+      })
+      .catch((err) => {
+        console.log(err);
+        setLoading(false)
         });
     }
   };
@@ -68,205 +75,20 @@ const Community = ({ user }) => {
           value={values.content}
           onChange={handleChange("content")}
         />
-        <Button
+        <LoadingButton
           color="success"
           variant="contained"
           // sx={{ ml: -5 }}
           onClick={addPost}
           disabled={!values.content ? true : false}
+          loading={loading}
         >
           <AddCircle />
-        </Button>
+        </LoadingButton>
       </Box>
-      {posts.map((post) => {
-        return (
-          <Box
-            sx={{
-              width: 400,
-              // height: 400,
-              display: "flex",
-              flexDirection: "column",
-              backgroundColor: "white",
-              borderRadius: 2,
-              boxShadow: "0 2px 4px #0000001a, 0 8px 16px #0000001a",
-              contain: "content",
-              m: 1,
-            }}
-          >
-            <Box
-              sx={{
-                p: 1,
-                display: "flex",
-                alignItems: "center",
-              }}
-            >
-              <Box
-                sx={{
-                  width: 25,
-                  height: 25,
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "center",
-                  borderRadius: "50%",
-                  contain: "content",
-                  marginRight: "5px",
-                }}
-              >
-                <img
-                  src={"http://localhost:8000/" + post.user.Image}
-                  alt=""
-                  style={{ height: 25 }}
-                />
-              </Box>
-              {post.user.name}
-            </Box>
-            <Box sx={{ p: 1 }}>{post.content}</Box>
-            {post.Image ? (
-              <Box
-                sx={{
-                  width: "100%",
-                  height: 300,
-                  contain: "content",
-                  // borderRadius: 2,
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "center",
-                }}
-              >
-                <img
-                  src="https://dailytimes.com.pk/assets/uploads/2022/08/01/pets-3715733_1920.jpg"
-                  alt=""
-                  style={{
-                    height: "100%",
-                  }}
-                />
-              </Box>
-            ) : (
-              <></>
-            )}
-          </Box>
-        );
-      })}
-      <Box
-        sx={{
-          width: 400,
-          height: 400,
-          display: "flex",
-          flexDirection: "column",
-          backgroundColor: "white",
-          borderRadius: 2,
-          boxShadow: "0 2px 4px #0000001a, 0 8px 16px #0000001a",
-          contain: "content",
-          m: 1,
-        }}
-      >
-        <Box
-          sx={{
-            p: 1,
-            display: "flex",
-            alignItems: "center",
-          }}
-        >
-          <Box
-            sx={{
-              width: 25,
-              height: 25,
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-              borderRadius: "50%",
-              contain: "content",
-              marginRight: "5px",
-            }}
-          >
-            <img
-              src={"http://localhost:8000/" + user.Image}
-              alt=""
-              style={{ height: 25 }}
-            />
-          </Box>
-          {user.firstName}
-        </Box>
-        <Box
-          sx={{
-            width: "100%",
-            height: 300,
-            contain: "content",
-            // borderRadius: 2,
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-          }}
-        >
-          <img
-            src="https://dailytimes.com.pk/assets/uploads/2022/08/01/pets-3715733_1920.jpg"
-            alt=""
-            style={{
-              height: "100%",
-            }}
-          />
-        </Box>
-      </Box>
-      <Box
-        sx={{
-          width: 400,
-          height: 400,
-          display: "flex",
-          flexDirection: "column",
-          backgroundColor: "white",
-          borderRadius: 2,
-          boxShadow: "0 2px 4px #0000001a, 0 8px 16px #0000001a",
-          contain: "content",
-          m: 1,
-        }}
-      >
-        <Box
-          sx={{
-            p: 1,
-            display: "flex",
-            alignItems: "center",
-          }}
-        >
-          <Box
-            sx={{
-              width: 25,
-              height: 25,
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-              borderRadius: "50%",
-              contain: "content",
-              marginRight: "5px",
-            }}
-          >
-            <img
-              src={"http://localhost:8000/" + user.Image}
-              alt=""
-              style={{ height: 25 }}
-            />
-          </Box>
-          {user.firstName}
-        </Box>
-        <Box
-          sx={{
-            width: "100%",
-            height: 300,
-            contain: "content",
-            // borderRadius: 2,
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-          }}
-        >
-          <img
-            src="https://dailytimes.com.pk/assets/uploads/2022/08/01/pets-3715733_1920.jpg"
-            alt=""
-            style={{
-              height: "100%",
-            }}
-          />
-        </Box>
-      </Box>
+{/* Post */}
+      <Post/>
+    
     </Box>
   );
 };
