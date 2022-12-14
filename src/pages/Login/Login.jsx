@@ -4,6 +4,7 @@ import axios from "axios";
 import { Link } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
 import "./Login.css";
+import { LoadingButton } from "@mui/lab";
 
 const Login = ({
   setAlert,
@@ -16,6 +17,7 @@ const Login = ({
   setCart,
 }) => {
   const Navigate = useNavigate();
+  const [loading, setLoading] = useState(false);
   const [values, setValues] = useState({
     email: "",
     password: "",
@@ -25,6 +27,7 @@ const Login = ({
     setValues({ ...values, [value]: e.target.value });
   };
   const login = () => {
+    setLoading(true);
     const { email, password } = values;
     if (email && password) {
       axios
@@ -37,6 +40,7 @@ const Login = ({
             setOpenAlert(true);
             setSeverity("success");
             Navigate("/my_pets");
+            setLoading(false);
             setLogin(true);
 
             const userId = { userId: res.data.user._id };
@@ -117,14 +121,14 @@ const Login = ({
             </Link>
             .
           </p>
-          <Button
+          <LoadingButton
             onClick={login}
             sx={{ width: 415, m: 1 }}
             color="success"
             variant="contained"
           >
             LOGIN
-          </Button>
+          </LoadingButton>
           <div> or </div>
           <div className="toRegister">
             Don't have an Account??? <Link to="/register">Create One</Link>

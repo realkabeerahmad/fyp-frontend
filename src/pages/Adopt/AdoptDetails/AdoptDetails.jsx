@@ -20,7 +20,11 @@ const AdoptDetails = ({ Pet }) => {
       <div className="Details-Right">
         <div className="Details-intro">
           <h1>{Pet.name.toUpperCase()}</h1>
-          <h2>{Pet.shelterName.toUpperCase()}</h2>
+          {Pet.shelterName ? (
+            <h2>{Pet.shelterName.toUpperCase()}</h2>
+          ) : (
+            <h2></h2>
+          )}
         </div>
         <div className="Details-details">
           <p className="details-description">{Pet.bio}</p>

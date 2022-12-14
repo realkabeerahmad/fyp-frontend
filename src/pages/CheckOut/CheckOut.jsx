@@ -49,7 +49,14 @@ TextMaskCustom.propTypes = {
   onChange: PropTypes.func.isRequired,
 };
 // =====================================================
-const CheckOut = ({ cart, setCart, user }) => {
+const CheckOut = ({
+  cart,
+  setCart,
+  user,
+  setAlert,
+  setOpenAlert,
+  setSeverity,
+}) => {
   const [loading, setLoading] = useState(false);
   // ==============================================
   const pay = () => {
@@ -114,7 +121,9 @@ const CheckOut = ({ cart, setCart, user }) => {
       !values.fullName ||
       !values.phoneNumber
     ) {
-      alert("All Fields Are Required");
+      setAlert("All Fields Are Required");
+      setSeverity("info");
+      setOpenAlert(true);
       return false;
     }
     const data = {
@@ -131,12 +140,15 @@ const CheckOut = ({ cart, setCart, user }) => {
     axios
       .post("http://localhost:8000/shop/checkOut", data)
       .then((res) => {
-        alert(res.data.status);
+        // alert();
+        setAlert(res.data.status);
+        setSeverity("success");
+        setOpenAlert(true);
         const data = { _id: cart._id };
         axios
           .post("http://localhost:8000/shop/getCartById", data)
           .then((r) => {
-            alert(r.data.message ? r.data.message : r.data.error);
+            // alert(r.data.message ? r.data.message : r.data.error);
             setCart(r.data.cart);
             Navigate("/shop/cart");
           })

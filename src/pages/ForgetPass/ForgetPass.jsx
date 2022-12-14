@@ -3,7 +3,12 @@ import { Box } from "@mui/system";
 import React from "react";
 import { Link, useNavigate } from "react-router-dom";
 
-const ForgetPass = () => {
+const ForgetPass = ({
+  setAlert,
+  setOpenAlert,
+  setSeverity,
+  setUserDetails,
+}) => {
   const Navigate = useNavigate();
   return (
     <div className="login-page">

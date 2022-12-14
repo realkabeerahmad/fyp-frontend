@@ -19,6 +19,7 @@ import {
   FilterList,
   Search,
 } from "@mui/icons-material";
+import { LoadingButton } from "@mui/lab";
 
 // ----------------------------------------------------------
 
@@ -229,6 +230,7 @@ const Shop = ({ setProduct }) => {
               <>No Product Found</>
             )}
           </Box>
+          {/* <LoadingButton loading>Loading</LoadingButton> */}
         </Box>
       </Box>
     </>
