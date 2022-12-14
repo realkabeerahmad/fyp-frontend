@@ -11,6 +11,8 @@ import {
 } from "@mui/material";
 import React, { useState } from "react";
 import axios from "axios";
+import { storage } from "../../firebase";
+import { ref, getDownloadURL, uploadBytesResumable } from "firebase/storage";
 // --------------------------------------------
 // --------------------------------------------
 // --------------------------------------------
@@ -20,12 +22,13 @@ const User = ({ user, setUser }) => {
   // --------------------------------------------
   const [open, setOpen] = useState(false);
   const [images, setFile] = useState();
+  const [imgUrl, setImgUrl] = useState(null);
   const [fileData, setFileData] = useState();
   const [values, setValues] = useState({
     userId: "",
     image: "",
   });
-
+  const [progresspercent, setProgresspercent] = useState(0);
   const handleClickOpen = () => {
     setOpen(true);
   };
@@ -52,22 +55,42 @@ const User = ({ user, setUser }) => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
+    // const file = e.target[0]?.files[0]
     if (!values.image) {
       alert("Please Add an Image");
       return false;
     } else {
+      const storageRef = ref(storage, `files/${values.image.name}`);
+      const uploadTask = uploadBytesResumable(storageRef, values.image);
+
+      uploadTask.on(
+        "state_changed",
+        (snapshot) => {
+          const progress = Math.round(
+            (snapshot.bytesTransferred / snapshot.totalBytes) * 100
+          );
+          setProgresspercent(progress);
+        },
+        (error) => {
+          alert(error);
+        },
+        () => {
+          getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {
+            setImgUrl(downloadURL);
+          });
+        }
+      );
       const img = Object.assign(values.image, { path: images });
       console.log(img);
 
-      const formData = new FormData();
-      formData.append("userId", user._id);
-      formData.append("image", fileData);
-      formData.append("path", images);
-      const config = {
-        headers: { "content-type": "multipart/form-data" },
-      };
+      // const formData = new FormData();
+      const data = { userId: user._id, url: imgUrl };
+      // formData.append("path", images);
+      // const config = {
+      //   headers: { "content-type": "multipart/form-data" },
+      // };
       axios
-        .post("http://localhost:8000/auth/updateProfileImage", formData, config)
+        .post("http://localhost:8000/auth/updateProfileImage", data)
         .then((res) => {
           alert(res.data.message);
           setValues({
@@ -146,10 +169,7 @@ const User = ({ user, setUser }) => {
                 justifyContent: "center",
               }}
             >
-              <img
-                src={"http://localhost:8000/" + user.Image}
-                style={{ height: "150px" }}
-              />
+              <img src={user.Image} style={{ height: "150px" }} />
             </Box>
             <Button
               variant="contained"

@@ -1,15 +1,23 @@
-import { Comment, MoreHoriz, Send, ThumbUp } from "@mui/icons-material";
+import { Comment, Delete, MoreHoriz, Send, ThumbUp } from "@mui/icons-material";
 import {
   Box,
   Button,
   IconButton,
+  Link,
   Menu,
   MenuItem,
   TextField,
 } from "@mui/material";
 import * as React from "react";
 
-const Post = () => {
+const Post = ({ post, user }) => {
+  const [comment, setComment] = React.useState({
+    userId: user._id,
+    _id: post._id,
+    content: "",
+  });
+  const [first, setFirst] = React.useState(true);
+  const [liked, setLiked] = React.useState(false);
   const [open, setOpen] = React.useState(false);
   const [active, setAcitve] = React.useState(false);
   const handleClick = () => {
@@ -25,6 +33,20 @@ const Post = () => {
       setAcitve(true);
     }
   };
+  const handleChange = (value) => (e) => {
+    setComment({ ...comment, [value]: e.target.value });
+  };
+  if (post.likes.length > 0 && first) {
+    for (let i = 0; i < post.likes.length; i++) {
+      // const element = post.likes[i];
+      if (post.likes[i].userId === user._id) {
+        setLiked(true);
+        setFirst(false);
+        break;
+      }
+    }
+  }
+  // setLiked(Object.values(post.likes).includes(user._id));
   return (
     <>
       <Box
@@ -62,11 +84,17 @@ const Post = () => {
               backgroundColor: "black",
             }}
           >
-            <img src={""} alt="" style={{ height: 25 }} />
+            <img
+              src={post.user.Image}
+              alt={post.user._id}
+              style={{ height: 25 }}
+            />
           </Box>
           <Box sx={{ ml: 1 }}>
-            <h4>Dummy</h4>
-            <Box sx={{ fontSize: 14, m: 0, p: 0 }}>Date</Box>
+            <h4>{post.user.name}</h4>
+            <Box sx={{ fontSize: 14, m: 0, p: 0 }}>
+              {post.createdAt.slice(0, 10)}
+            </Box>
           </Box>
 
           <IconButton
@@ -76,31 +104,40 @@ const Post = () => {
             <MoreHoriz />
           </IconButton>
         </Box>
-        <Box sx={{ p: 1 }}>
-          Lorem ipsum dolor, sit amet consectetur adipisicing elit. Vero, ut!
-        </Box>
+        <Box sx={{ p: 1, textAlign: "justify" }}>{post.content}</Box>
+        {post.Image ? (
+          <Box
+            sx={{
+              width: "100%",
+              height: 300,
+              contain: "content",
+              // borderRadius: 2,
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+            }}
+          >
+            <img
+              src={post.Image}
+              alt={post._id}
+              style={{
+                height: "100%",
+              }}
+            />
+          </Box>
+        ) : (
+          <></>
+        )}
         <Box
           sx={{
-            width: "100%",
-            height: 300,
-            contain: "content",
-            // borderRadius: 2,
             display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
+            justifyContent: "space-between",
+            px: 1,
+            borderTop: "1px solid #cfcfcf",
           }}
         >
-          <img
-            src="https://dailytimes.com.pk/assets/uploads/2022/08/01/pets-3715733_1920.jpg"
-            alt=""
-            style={{
-              height: "100%",
-            }}
-          />
-        </Box>
-        <Box sx={{ display: "flex", justifyContent: "space-between", px: 1 }}>
-          <Box>{0} Like</Box>
-          <Box>{0} Comment</Box>
+          <Box>{post.likes_count} Likes</Box>
+          <Box>{post.comments_count} Opinions</Box>
         </Box>
         <Box
           sx={{
@@ -110,51 +147,78 @@ const Post = () => {
             borderBottom: "1px solid #cfcfcf",
           }}
         >
-          <Button>
-            <ThumbUp sx={{ mr: 1 }} /> Like
+          <Button sx={{ color: liked ? "#e92e4a" : "grey !important" }}>
+            <ThumbUp sx={{ mr: 1, fontSize: 18 }} /> Like
           </Button>
-          <Button onClick={handleActive}>
-            <Comment sx={{ mr: 1 }} /> Comment
+          <Button onClick={handleActive} sx={{ color: "grey !important" }}>
+            <Comment sx={{ mr: 1, fontSize: 18 }} /> Opinions
           </Button>
-        </Box>
-        <Box sx={{ p: 1 }}>
-          <Box sx={{ display: "flex", alignItems: "center" }}>
-            <Box
-              sx={{
-                width: 25,
-                height: 25,
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-                borderRadius: "50%",
-                contain: "content",
-                marginRight: "5px",
-                backgroundColor: "black",
-              }}
-            >
-              <img src={""} alt="" style={{ height: 25 }} />
-            </Box>
-            <Box sx={{ ml: 1 }}>
-              <h5>Dummy</h5>
-            </Box>
-          </Box>
-          <Box>Comment Content</Box>
         </Box>
         {active ? (
-          <Box
-            sx={{
-              p: 1,
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "space-around",
-              borderTop: "1px solid #cfcfcf",
-            }}
-          >
-            <TextField variant="standard" sx={{ width: "80%" }} />
-            <Button variant="contained">
-              <Send />
-            </Button>
-          </Box>
+          <>
+            {post.comments.length > 0 ? (
+              post.comments.map((comment) => {
+                return (
+                  <Box sx={{ p: 1, borderBottom: "1px solid #cfcfcf" }}>
+                    <Box sx={{ display: "flex", alignItems: "center" }}>
+                      <Box
+                        sx={{
+                          width: 25,
+                          height: 25,
+                          display: "flex",
+                          alignItems: "center",
+                          justifyContent: "center",
+                          borderRadius: "50%",
+                          contain: "content",
+                          marginRight: "5px",
+                          backgroundColor: "black",
+                        }}
+                      >
+                        <img
+                          src={comment.user.Image}
+                          alt=""
+                          style={{ height: 25 }}
+                        />
+                      </Box>
+                      <Box sx={{ ml: 1 }}>
+                        <h5>{comment.user.name}</h5>
+                      </Box>
+                      <Box sx={{ fontSize: 10, ml: 1 }}>
+                        ({comment.createdAt.slice(0, 10)})
+                      </Box>
+                      <IconButton sx={{ position: "absolute", right: 10 }}>
+                        <Delete sx={{ fontSize: 15 }} />
+                      </IconButton>
+                    </Box>
+                    <Box sx={{ textAlign: "justify" }}>{comment.content}</Box>
+                  </Box>
+                );
+              })
+            ) : (
+              <></>
+            )}
+
+            <Box
+              sx={{
+                p: 1,
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "space-around",
+              }}
+            >
+              <TextField
+                variant="standard"
+                sx={{ width: "80%" }}
+                color="error"
+                placeholder="Share Your Oppinion on this"
+                onChange={handleChange("content")}
+                value={comment.content}
+              />
+              <Button disabled={!comment.content} color="error">
+                <Send />
+              </Button>
+            </Box>
+          </>
         ) : (
           <></>
         )}

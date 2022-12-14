@@ -17,22 +17,22 @@ const Community = ({ user }) => {
     setValues({ ...values, [value]: e.target.value });
   };
   const addPost = () => {
-    setLoading(true)
+    setLoading(true);
     if (!user._id) {
       alert("Please Login");
-      setLoading(false)
+      setLoading(false);
       return false;
     } else {
       axios
-      .post("http://localhost:8000/community/addPost", values)
-      .then((res) => {
-        alert(res.data.message);
-        fetchPosts();
-        setLoading(false)
-      })
-      .catch((err) => {
-        console.log(err);
-        setLoading(false)
+        .post("http://localhost:8000/community/addPost", values)
+        .then((res) => {
+          alert(res.data.message);
+          fetchPosts();
+          setLoading(false);
+        })
+        .catch((err) => {
+          console.log(err);
+          setLoading(false);
         });
     }
   };
@@ -69,16 +69,19 @@ const Community = ({ user }) => {
         }}
       >
         <TextField
-          color="success"
+          // color="success"
+          variant="standard"
           sx={{ width: "100%" }}
-          placeholder="Add Post"
+          placeholder="Ask Community"
+          color="error"
           value={values.content}
           onChange={handleChange("content")}
         />
         <LoadingButton
-          color="success"
-          variant="contained"
+          // color="success"
+          // variant="contained"
           // sx={{ ml: -5 }}
+          color="error"
           onClick={addPost}
           disabled={!values.content ? true : false}
           loading={loading}
@@ -86,9 +89,10 @@ const Community = ({ user }) => {
           <AddCircle />
         </LoadingButton>
       </Box>
-{/* Post */}
-      <Post/>
-    
+      {/* Post */}
+      {posts.map((post) => {
+        return <Post post={post} user={user} />;
+      })}
     </Box>
   );
 };

@@ -151,11 +151,7 @@ const Navigation = ({
                   <Avatar
                     sx={{ width: 30, height: 30, backgroundColor: "white" }}
                   >
-                    <img
-                      src={"http://localhost:8000/" + user.Image}
-                      alt=""
-                      style={{ height: 30 }}
-                    />
+                    <img src={user.Image} alt="" style={{ height: 30 }} />
                   </Avatar>
                 </IconButton>
               </Tooltip>
@@ -183,7 +179,7 @@ const Navigation = ({
                         }}
                       >
                         <img
-                          src={"http://localhost:8000/" + user.Image}
+                          src={user.Image}
                           alt=""
                           style={{ height: "25px" }}
                         />
