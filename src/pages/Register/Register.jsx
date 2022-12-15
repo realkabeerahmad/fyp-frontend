@@ -1,4 +1,10 @@
-import { Box, Button, CircularProgress, TextField } from "@mui/material";
+import {
+  Box,
+  Button,
+  CircularProgress,
+  Divider,
+  TextField,
+} from "@mui/material";
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import axios from "axios";
@@ -22,7 +28,8 @@ const Register = ({ setAlert, setOpenAlert, setSeverity, setUserDetails }) => {
   const [mail, setMail] = useState({ error: false, helperText: "" });
   const [pass, setPass] = useState({
     error: false,
-    helperText: "Password must contain 8-digit and Should be Alpha-Numeric",
+    helperText:
+      "Password must contain 8-digit and Should be Alpha-Numeric and must contain one of following special Character (!@#$%^&*-_.)",
   });
   const [rePass, setRePass] = useState({ error: false, helperText: "" });
 
@@ -37,7 +44,7 @@ const Register = ({ setAlert, setOpenAlert, setSeverity, setUserDetails }) => {
     return re.test(values.lastName);
   };
   const isPasswordValid = () => {
-    var re = /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%^&*]).{8,}$/;
+    var re = /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%^&*-_.]).{8,}$/;
     return re.test(values.password);
   };
 
@@ -55,7 +62,8 @@ const Register = ({ setAlert, setOpenAlert, setSeverity, setUserDetails }) => {
     if (pass.error && value === "password" && values[value].length >= 8) {
       setPass({
         error: false,
-        helperText: "Password must contain 8-digit and Should be Alpha-Numeric",
+        helperText:
+          "Password must contain 8-digit and Should be Alpha-Numeric and must contain one of following special Character (!@#$%^&*-_.)",
       });
     }
     if (
@@ -100,7 +108,8 @@ const Register = ({ setAlert, setOpenAlert, setSeverity, setUserDetails }) => {
     ) {
       setPass({
         error: true,
-        helperText: "Password must contain 8-digit and Should be Alpha-Numeric",
+        helperText:
+          "Password must contain 8-digit and Should be Alpha-Numeric and must contain one of following special Character (!@#$%^&*-_.)",
       });
       return false;
     } else if (!rePass.error && values.repassword !== values.password) {
@@ -155,7 +164,7 @@ const Register = ({ setAlert, setOpenAlert, setSeverity, setUserDetails }) => {
           <TextField
             name="firstName"
             label="First Name"
-            variant="outlined"
+            variant="standard"
             type="text"
             color="success"
             onChange={handleChange("firstName")}
@@ -169,7 +178,7 @@ const Register = ({ setAlert, setOpenAlert, setSeverity, setUserDetails }) => {
           <TextField
             name="lastName"
             label="Last Name"
-            variant="outlined"
+            variant="standard"
             type="text"
             color="success"
             onChange={handleChange("lastName")}
@@ -184,7 +193,7 @@ const Register = ({ setAlert, setOpenAlert, setSeverity, setUserDetails }) => {
           <TextField
             name="email"
             label="Email"
-            variant="outlined"
+            variant="standard"
             color="success"
             type="email"
             onChange={handleChange("email")}
@@ -199,14 +208,14 @@ const Register = ({ setAlert, setOpenAlert, setSeverity, setUserDetails }) => {
             <TextField
               name="password"
               label="Password"
-              variant="outlined"
+              variant="standard"
               type={showPassword ? "text" : "password"}
               color="success"
               onChange={handleChange("password")}
               value={password}
               onBlur={onBlur("password")}
               error={pass.error}
-              helperText={pass.helperText}
+              helperText={pass.helperText.toLowerCase()}
               sx={{ width: "84%", m: 1 }}
             />
             <i
@@ -219,7 +228,7 @@ const Register = ({ setAlert, setOpenAlert, setSeverity, setUserDetails }) => {
           <TextField
             name="repassword"
             label="Re-Enter Password"
-            variant="outlined"
+            variant="standard"
             type={showPassword ? "text" : "password"}
             color="success"
             onChange={handleChange("repassword")}
@@ -241,7 +250,7 @@ const Register = ({ setAlert, setOpenAlert, setSeverity, setUserDetails }) => {
         >
           {loading ? <CircularProgress color="success" /> : "SIGN UP"}
         </Button>
-        <div>or</div>
+        <Divider sx={{ width: 415, m: 1 }}>OR</Divider>
         <div className="toLogin">
           Already Have an Account? <Link to="/login">Login Here</Link>
         </div>

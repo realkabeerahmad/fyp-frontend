@@ -74,15 +74,15 @@ const User = ({ user, setUser }) => {
         (error) => {
           alert(error);
         },
-        () => {
-          getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {
+        async () => {
+          await getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {
             setImgUrl(downloadURL);
           });
         }
       );
-      const img = Object.assign(values.image, { path: images });
-      console.log(img);
-
+      // const img = Object.assign(values.image, { path: images });
+      console.log(imgUrl);
+      if (imgUrl === null) return;
       // const formData = new FormData();
       const data = { userId: user._id, url: imgUrl };
       // formData.append("path", images);
@@ -97,6 +97,7 @@ const User = ({ user, setUser }) => {
             userId: "",
             image: "",
           });
+          setImgUrl(null);
           const data = { _id: user._id };
           axios
             .post("http://localhost:8000/auth/showUser", data)

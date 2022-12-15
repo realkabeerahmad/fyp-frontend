@@ -1,4 +1,4 @@
-import { Box, TextField, Button } from "@mui/material";
+import { Box, TextField, Button, Divider } from "@mui/material";
 import { useState } from "react";
 import axios from "axios";
 import { Link } from "react-router-dom";
@@ -96,7 +96,7 @@ const Login = ({
               required
               name="email"
               label="Email"
-              variant="outlined"
+              variant="standard"
               type="email"
               color="success"
               value={email}
@@ -106,7 +106,7 @@ const Login = ({
             <TextField
               name="password"
               label="Password"
-              variant="outlined"
+              variant="standard"
               type="password"
               color="success"
               value={password}
@@ -129,7 +129,7 @@ const Login = ({
           >
             LOGIN
           </LoadingButton>
-          <div> or </div>
+          <Divider sx={{ width: 415, m: 1 }}>OR</Divider>
           <div className="toRegister">
             Don't have an Account??? <Link to="/register">Create One</Link>
           </div>

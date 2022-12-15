@@ -1,4 +1,4 @@
-import { TextField } from "@mui/material";
+import { Button, Divider, TextField } from "@mui/material";
 import { Box } from "@mui/system";
 import React from "react";
 import { Link, useNavigate } from "react-router-dom";
@@ -19,16 +19,21 @@ const ForgetPass = ({
             <TextField
               name="Email"
               label="Email"
-              variant="outlined"
+              variant="standard"
               type="email"
               color="success"
               sx={{ width: 415, m: 1 }}
             />
           </Box>
-          <div className="button" onClick={() => Navigate("/verify_otp")}>
+          <Button
+            onClick={() => Navigate("/verify_otp")}
+            variant="contained"
+            sx={{ width: 415, m: 1 }}
+            color="success"
+          >
             SEND OTP
-          </div>
-          <div> or </div>
+          </Button>
+          <Divider sx={{ width: 415, m: 1 }}>OR</Divider>
           <div className="toRegister">
             Remeber Password??? <Link to="/login">Login here</Link>
           </div>
