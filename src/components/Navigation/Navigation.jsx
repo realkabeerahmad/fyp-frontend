@@ -185,7 +185,7 @@ const Navigation = ({
                         />
                       </Box>
                       &nbsp; &nbsp;
-                      {user.firstName + " " + user.lastName}
+                      {user.name}
                     </MenuItem>
                   </Link>
                   <Link to="/Wishlist" style={{ color: "black" }}>

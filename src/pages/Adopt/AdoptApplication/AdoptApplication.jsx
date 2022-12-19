@@ -186,7 +186,7 @@ const AdoptApplication = ({ user, Pet, setUser }) => {
                 sx={{ width: "45%", m: 1 }}
                 name="name"
                 type="text"
-                value={user.firstName + " " + user.lastName}
+                value={user.name}
                 disabled
                 required
               />

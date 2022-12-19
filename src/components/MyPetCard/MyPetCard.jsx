@@ -45,11 +45,11 @@ const MyPetCard = ({ Pet, setPet, setPets, user }) => {
       >
         <div className="pet-card-wrapper">
           <div className="pet-img">
-            <img src={"http://localhost:8000/" + Pet.image} alt="" />
+            <img src={Pet.image} alt="" />
           </div>
           <div className="pet-details">
             <p className="pet-name">{Pet.name}</p>
-            <p className="pet-dob">{Pet.dob.slice(0, 10)}</p>
+            <p className="pet-dob">{Pet.age}</p>
           </div>
         </div>
       </Link>

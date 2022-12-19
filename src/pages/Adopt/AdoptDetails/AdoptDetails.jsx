@@ -7,7 +7,6 @@ import "./AdoptDetails.css";
 // ---------------------------------------------------
 
 const AdoptDetails = ({ Pet }) => {
-  const Server = "http://localhost:8000/";
   const Navigate = useNavigate();
   return (
     <div className="Details">
@@ -15,13 +14,13 @@ const AdoptDetails = ({ Pet }) => {
         <Link to="/adopt">
           <i className="fa fa-arrow-left"></i>
         </Link>
-        <img src={Server + Pet.image} alt={Pet._id} />
+        <img src={Pet.image} alt={Pet._id} />
       </div>
       <div className="Details-Right">
         <div className="Details-intro">
           <h1>{Pet.name.toUpperCase()}</h1>
-          {Pet.shelterName ? (
-            <h2>{Pet.shelterName.toUpperCase()}</h2>
+          {Pet.shelter.name ? (
+            <h2>{Pet.shelter.name.toUpperCase()}</h2>
           ) : (
             <h2></h2>
           )}
@@ -39,15 +38,19 @@ const AdoptDetails = ({ Pet }) => {
               <tr>
                 <th>Gender:</th>
                 <td>{Pet.gender}</td>
-                <th>Date of Birth:</th>
-                <td>{Pet.dob.slice(0, 10)}</td>
+                <th>Age:</th>
+                <td>{Pet.age}</td>
               </tr>
-              <tr>
-                <th>Passport No:</th>
-                <td>{Pet.passport}</td>
-                <th></th>
-                <td></td>
-              </tr>
+              {Pet.passport ? (
+                <tr>
+                  <th>Passport No:</th>
+                  <td>{Pet.passport}</td>
+                  <th></th>
+                  <td></td>
+                </tr>
+              ) : (
+                <></>
+              )}
             </tbody>
           </table>
         </div>

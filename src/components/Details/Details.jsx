@@ -140,13 +140,17 @@ const Details = ({ user, Pet }) => {
               <td>{Pet.gender}</td>
             </tr>
             <tr>
-              <th>Date of Birth:</th>
-              <td>{Pet.dob.slice(0, 10)}</td>
+              <th>Age:</th>
+              <td>{Pet.age}</td>
             </tr>
-            <tr>
-              <th>Passport Number:</th>
-              <td>{Pet.passport}</td>
-            </tr>
+            {Pet.passport ? (
+              <tr>
+                <th>Passport Number:</th>
+                <td>{Pet.passport}</td>
+              </tr>
+            ) : (
+              <></>
+            )}
           </tbody>
         </table>
       </div>

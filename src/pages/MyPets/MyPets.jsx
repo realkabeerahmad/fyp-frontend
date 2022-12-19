@@ -16,8 +16,9 @@ const MyPets = ({ user, setPet }) => {
   }, []);
   const fetchItem = () => {
     axios
-      .post("http://localhost:8000/pet/showAllPets/", data)
+      .post("http://localhost:8000/pet/user/show", data)
       .then((res) => {
+        console.log(res.data);
         setPets(res.data.pets);
       })
       .catch((err) => {

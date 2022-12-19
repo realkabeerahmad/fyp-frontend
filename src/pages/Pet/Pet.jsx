@@ -17,7 +17,7 @@ const Pet = ({ Pet }) => {
         <div className="hidden"></div>
         <div className="pet-info">
           <div className="pet-profile-image" onClick={handleOpen}>
-            <img src={"http://localhost:8000/" + Pet.image} alt="" />
+            <img src={Pet.image} alt="" />
           </div>
           <Modal open={open} onClose={handleClose}>
             <div className="pet-img-pop-wrapper">
@@ -67,14 +67,18 @@ const Pet = ({ Pet }) => {
           >
             <div>Meal Timings</div>
           </NavLink>
-          <NavLink
-            to="walk_timings"
-            className={({ isActive }) =>
-              isActive ? activeClassName : undefined
-            }
-          >
-            <div>Walk Timings</div>
-          </NavLink>
+          {Pet.type === "Dog" ? (
+            <NavLink
+              to="walk_timings"
+              className={({ isActive }) =>
+                isActive ? activeClassName : undefined
+              }
+            >
+              <div>Walk Timings</div>
+            </NavLink>
+          ) : (
+            <></>
+          )}
         </div>
         <div className="pet-links-outlet">
           <Outlet />

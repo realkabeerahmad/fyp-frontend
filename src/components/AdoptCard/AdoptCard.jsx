@@ -16,7 +16,7 @@ const AdoptCard = ({ Pet, setPet }) => {
         <div className="pet-adopt">
           <div className="pet-adopt-left">
             <img
-              src={"http://localhost:8000/" + Pet.image}
+              src={Pet.image}
               alt={Pet._id}
               title={`Pet Name: ${Pet.name} | Shelter Name: ${Pet.shelterName}`}
             />
@@ -24,10 +24,13 @@ const AdoptCard = ({ Pet, setPet }) => {
           <div className="pet-adopt-right">
             <div className="pet-info-head">
               <h2 className="petName">{Pet.name.toUpperCase()}</h2>
-              {Pet.shelterName ? (
-                <h4 className="ShelterName">{Pet.shelterName.toUpperCase()}</h4>
+              {Pet.shelter.name ? (
+                <h4 className="ShelterName">
+                  {Pet.shelter.name.toUpperCase()}
+                </h4>
+              ) : Pet.user.name ? (
+                <h4 className="ShelterName">{Pet.user.name.toUpperCase()}</h4>
               ) : (
-                // <h4 className="ShelterName">{Pet.shelterName.toUpperCase()}</h4>
                 <></>
               )}
             </div>

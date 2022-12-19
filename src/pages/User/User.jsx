@@ -23,12 +23,12 @@ const User = ({ user, setUser }) => {
   const [open, setOpen] = useState(false);
   const [images, setFile] = useState();
   const [imgUrl, setImgUrl] = useState(null);
+  const [progresspercent, setProgresspercent] = useState(0);
   const [fileData, setFileData] = useState();
   const [values, setValues] = useState({
     userId: "",
     image: "",
   });
-  const [progresspercent, setProgresspercent] = useState(0);
   const handleClickOpen = () => {
     setOpen(true);
   };
@@ -42,7 +42,7 @@ const User = ({ user, setUser }) => {
 
   const handleImage = (e) => {
     setValues({ ...values, image: e.target.files[0] });
-    setFileData(e.target.files[0]);
+    // setFileData(e.target.files[0]);
     // setFile(URL.createObjectURL(e.target.files));
     // console.log(e.target.files[0].size);
     // console.log(URL.createObjectURL(e.target.files[0]));
@@ -199,13 +199,8 @@ const User = ({ user, setUser }) => {
           <table style={{ width: "100%" }}>
             <tbody>
               <tr>
-                <th>First Name:</th>
-                <td>{user.firstName}</td>
-                <td></td>
-              </tr>
-              <tr>
-                <th>Last Name:</th>
-                <td>{user.lastName}</td>
+                <th>Name:</th>
+                <td>{user.name}</td>
                 <td></td>
               </tr>
               <tr>
