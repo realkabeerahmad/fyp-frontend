@@ -9,6 +9,7 @@ import DialogContent from "@mui/material/DialogContent";
 import DialogContentText from "@mui/material/DialogContentText";
 import DialogTitle from "@mui/material/DialogTitle";
 import { Notifications } from "@mui/icons-material";
+import url from "../../apiCalls/api";
 
 // --------------------------------------------------
 
@@ -26,19 +27,18 @@ const Time = ({ Pet, setPet, time, timeName }) => {
 
   const deleteTime = () => {
     const data = { _id: Pet._id, timeId: time._id };
-    var url = "";
+    var uri = "";
     if (timeName === "meal") {
-      url = "http://localhost:8000/pet/deleteMealTime";
+      uri = "/pet/meal/delete";
     } else if (timeName === "walk") {
-      url = "http://localhost:8000/pet/deleteWalkTime";
+      uri = "/pet/walk/delete";
     }
     axios
-      .post(url, data)
+      .post(url + uri, data)
       .then((res) => {
         alert(res.data.message);
-        // handleClose();
         axios
-          .post("http://localhost:8000/pet/showPet", data)
+          .post(url + "/pet/show", data)
           .then((r) => {
             setPet(r.data.pet);
             handleClose();

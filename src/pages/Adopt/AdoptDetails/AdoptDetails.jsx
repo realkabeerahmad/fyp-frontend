@@ -1,5 +1,5 @@
-import { Pets } from "@mui/icons-material";
-import { Button } from "@mui/material";
+import { ArrowBack, Pets } from "@mui/icons-material";
+import { Button, IconButton } from "@mui/material";
 import React from "react";
 import { Link, useNavigate } from "react-router-dom";
 import "./AdoptDetails.css";
@@ -11,9 +11,12 @@ const AdoptDetails = ({ Pet }) => {
   return (
     <div className="Details">
       <div className="Details-Left">
-        <Link to="/adopt">
-          <i className="fa fa-arrow-left"></i>
-        </Link>
+        <IconButton
+          sx={{ position: "absolute", top: 10, left: 10 }}
+          onClick={() => Navigate(-1)}
+        >
+          <ArrowBack />
+        </IconButton>
         <img src={Pet.image} alt={Pet._id} />
       </div>
       <div className="Details-Right">

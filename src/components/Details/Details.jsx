@@ -10,31 +10,85 @@ import {
   parrotBreed,
   rabbitBreed,
 } from "../../pages/AddPet/breeds";
-import { Button } from "@mui/material";
-import { CheckCircle } from "@mui/icons-material";
+import {
+  Autocomplete,
+  Box,
+  Button,
+  FormControl,
+  IconButton,
+  Input,
+  InputLabel,
+  MenuItem,
+  Select,
+  Table,
+  TableBody,
+  TableCell,
+  TableRow,
+  TextField,
+} from "@mui/material";
+import { CheckCircle, Close, Redo, Undo } from "@mui/icons-material";
 
+import { IMaskInput } from "react-imask";
+import PropTypes from "prop-types";
+import url from "../../apiCalls/api";
+
+// ======================================================
+// ======================================================
+const TextMaskCustom = React.forwardRef(function TextMaskCustom(props, ref) {
+  const { onChange, ...other } = props;
+  return (
+    <IMaskInput
+      {...other}
+      mask="PK#0000-0"
+      definitions={{
+        "#": /[1-9]/,
+      }}
+      inputRef={ref}
+      onAccept={(value) => onChange({ target: { name: props.name, value } })}
+      overwrite
+    />
+  );
+});
+
+TextMaskCustom.propTypes = {
+  name: PropTypes.string.isRequired,
+  onChange: PropTypes.func.isRequired,
+};
 // --------------------------------------------------
 
-const Details = ({ user, Pet }) => {
+const Details = ({ user, Pet, setPet }) => {
+  const [breedArr, SetBreedArr] = useState(
+    Pet.type === "Cat"
+      ? catBreeds
+      : Pet.type === "Dog"
+      ? dogBreeds
+      : Pet.type === "Parrot"
+      ? parrotBreed
+      : Pet.type === "Rabit"
+      ? rabbitBreed
+      : [{ label: "Other", value: "Other" }]
+  );
   const [values, setValues] = useState({
-    userId: "",
-    name: "",
-    bio: "",
-    age: "",
-    gender: "",
-    breed: "",
-    type: "",
-    image: "",
-    passport: "",
+    _id: Pet._id,
+    age: Pet.age,
+    bio: Pet.bio,
+    gender: Pet.gender,
+    passport: Pet.passport,
   });
-
+  const [Breed, setBreed] = React.useState(Pet.breed);
   const [open, setOpen] = useState(false);
   const handleOpen = () => setOpen(true);
   const handleClose = () => {
+    setValues({
+      _id: Pet._id,
+      age: Pet.age,
+      bio: Pet.bio,
+      gender: Pet.gender,
+      passport: Pet.passport,
+    });
+    setBreed(Pet.breed);
     setOpen(false);
   };
-
-  const [breedArr, SetBreedArr] = useState([{ label: "Other" }]);
 
   const handleChange = (value) => (e) => {
     setValues({ ...values, [value]: e.target.value });
@@ -64,51 +118,38 @@ const Details = ({ user, Pet }) => {
     });
     reader.readAsDataURL(e.target.files[0]);
   };
-
-  const [date, setDate] = useState(dayjs("2019-01-20T21:11:54"));
-
-  const handleDate = (e) => {
-    setDate(e);
-  };
-
   const handleSubmit = (e) => {
     e.preventDefault();
-    if (!values.image) {
-      alert("Please Add an Image");
+    if (!values.gender || !values.bio || !values.age || !Breed) {
+      alert("Please add all required details");
       return false;
     } else {
-      const formData = new FormData();
-      formData.append("userId", user._id);
-      formData.append("image", values.image);
-      formData.append("name", values.name);
-      formData.append("bio", values.bio);
-      formData.append("age", values.age);
-      formData.append("gender", values.gender);
-      formData.append("breed", values.breed);
-      formData.append("type", values.type);
-      formData.append("passport", values.passport);
-      formData.append("dob", date);
-      const config = {
-        headers: { "content-type": "multipart/form-data" },
+      const formData = {
+        _id: values._id,
+        age: values.age,
+        bio: values.bio,
+        gender: values.gender,
+        breed: Breed,
+        passport: values.passport,
       };
       axios
-        .post("http://localhost:8000/pet/addPet", formData, config)
+        .post(url + "/pet/edit", formData)
         .then((res) => {
-          alert(res.data.message);
-          setValues({
-            userId: "",
-            name: "",
-            bio: "",
-            gender: "",
-            breed: "",
-            type: "",
-            image: "",
-            passport: "",
-            dob: "",
-          });
+          if (res.data.status === "success") {
+            const data = { _id: Pet._id };
+            axios.post(url + "/pet/show", data).then((res) => {
+              if (res.data.status === "success") {
+                setPet(res.data.pet);
+                handleClose();
+              } else {
+                alert("Data not Found");
+              }
+            });
+          } else {
+            alert(res.data.message);
+          }
         })
         .catch((err) => {
-          // alert(err.data.message);
           alert(err);
         });
     }
@@ -120,48 +161,214 @@ const Details = ({ user, Pet }) => {
         <p className="details-header-heading">
           <b>DETAILS</b>
         </p>
-        <Button onClick={handleOpen} color="error">
-          <EditIcon />
-        </Button>
+        <Box>
+          {!Pet.rehome && user.isShelter ? (
+            <Button
+              onClick={false}
+              color="error"
+              // variant="contained"
+              sx={{ fontSize: 12, mr: 1 }}
+            >
+              <Redo sx={{ mr: 1, fontSize: 13 }} /> Rehome
+            </Button>
+          ) : Pet.rehome && user.isShelter ? (
+            <Button
+              onClick={false}
+              color="error"
+              // variant="contained"
+              sx={{ fontSize: 12, mr: 1 }}
+            >
+              Undo Rehome
+            </Button>
+          ) : (
+            <></>
+          )}
+          <IconButton onClick={handleOpen} color="error">
+            <EditIcon />
+          </IconButton>
+        </Box>
       </div>
-      <div className="details-more">
-        <table>
-          <tbody>
-            <tr>
-              <th>Type:</th>
-              <td>{Pet.type}</td>
-            </tr>
-            <tr>
-              <th>Breed:</th>
-              <td>{Pet.breed}</td>
-            </tr>
-            <tr>
-              <th>Gender:</th>
-              <td>{Pet.gender}</td>
-            </tr>
-            <tr>
-              <th>Age:</th>
-              <td>{Pet.age}</td>
-            </tr>
+      <Box sx={{ width: "100%" }}>
+        <Table>
+          <TableBody>
+            <TableRow>
+              <TableCell sx={{ fontWeight: 700, color: "#2f2f2f" }}>
+                Type:
+              </TableCell>
+              <TableCell>{Pet.type}</TableCell>
+              <TableCell sx={{ fontWeight: 700, color: "#2f2f2f" }}>
+                Breed:
+              </TableCell>
+              <TableCell>{Pet.breed}</TableCell>
+            </TableRow>
+
+            <TableRow>
+              <TableCell sx={{ fontWeight: 700, color: "#2f2f2f" }}>
+                Gender:
+              </TableCell>
+              <TableCell>{Pet.gender}</TableCell>
+              <TableCell sx={{ fontWeight: 700, color: "#2f2f2f" }}>
+                Age:
+              </TableCell>
+              <TableCell>{Pet.age}</TableCell>
+            </TableRow>
+
             {Pet.passport ? (
-              <tr>
-                <th>Passport Number:</th>
-                <td>{Pet.passport}</td>
-              </tr>
+              <TableRow>
+                <TableCell sx={{ fontWeight: 700, color: "#2f2f2f" }}>
+                  Passport Number:
+                </TableCell>
+                <TableCell>{Pet.passport}</TableCell>
+                <TableCell></TableCell>
+                <TableCell></TableCell>
+              </TableRow>
             ) : (
               <></>
             )}
-          </tbody>
-        </table>
-      </div>
+          </TableBody>
+        </Table>
+      </Box>
       <Modal open={open} onClose={handleClose}>
         <div className="add">
-          <div className="add-wrapper">
+          <Box
+            sx={{
+              width: 500,
+              height: "90%",
+              borderRadius: 2,
+              backgroundColor: "white",
+              contain: "content",
+            }}
+          >
             <div className="add-top-bar">
               <h2>Edit Vaccination Details</h2>
-              <i className="fa fa-times" onClick={handleClose}></i>
+              <IconButton
+                onClick={handleClose}
+                sx={{ position: "absolute", top: 5, right: 10 }}
+              >
+                <Close />
+              </IconButton>
             </div>
-
+            <Box sx={{ width: "100%", p: 2 }}>
+              <TextField
+                label="Pet Bio"
+                variant="standard"
+                color="success"
+                sx={{ width: "100%", my: 1 }}
+                name="bio"
+                type="text"
+                value={values.bio}
+                onChange={handleChange("bio")}
+                required
+                helperText="Maximum 100 characters"
+              />
+              <FormControl
+                variant="standard"
+                color="success"
+                sx={{ width: "100%", my: 1 }}
+              >
+                <InputLabel htmlFor="formatted-text-mask-input">
+                  Pet Passport Number (Optional)
+                </InputLabel>
+                <Input
+                  variant="standard"
+                  value={values.passport}
+                  onChange={handleChange("passport")}
+                  name="textmask"
+                  id="formatted-text-mask-input"
+                  inputComponent={TextMaskCustom}
+                />
+                <Box sx={{ fontSize: 12, color: "GrayText" }}>
+                  Formate (PK00000-0)
+                </Box>
+              </FormControl>
+              <FormControl variant="standard" sx={{ width: "100%", my: 1 }}>
+                <InputLabel id="gender" color="success">
+                  Gender *
+                </InputLabel>
+                <Select
+                  label="Gender *"
+                  name="gender"
+                  id="gender"
+                  color="success"
+                  variant="standard"
+                  value={values.gender}
+                  onChange={handleChange("gender")}
+                  required
+                >
+                  <MenuItem value="Male">Male</MenuItem>
+                  <MenuItem value="Female">Female</MenuItem>
+                </Select>
+              </FormControl>
+              <Autocomplete
+                disablePortal
+                id="combo-box-demo"
+                options={breedArr}
+                getOptionSelected={(option, value) =>
+                  console.log(option, value)
+                }
+                color="success"
+                disableClearable
+                value={Breed}
+                onChange={(event, value) => {
+                  setBreed(value);
+                }}
+                sx={{ width: "100%", my: 1 }}
+                renderInput={(params) => (
+                  <TextField
+                    {...params}
+                    label="Breed"
+                    variant="standard"
+                    color="success"
+                    required
+                  />
+                )}
+              />
+              <FormControl variant="standard" sx={{ width: "100%", my: 1 }}>
+                <InputLabel id="type" color="success">
+                  Pet Age *
+                </InputLabel>
+                <Select
+                  label="Age *"
+                  id="age"
+                  color="success"
+                  variant="standard"
+                  name="type"
+                  type="text"
+                  value={values.age}
+                  onChange={handleChange("age")}
+                  onBlur={onBlur}
+                  required
+                >
+                  <MenuItem value="0 Months">0 Month</MenuItem>
+                  <MenuItem value="1 Month">1 Month</MenuItem>
+                  <MenuItem value="2 Months">2 Months</MenuItem>
+                  <MenuItem value="3 Months">3 Months</MenuItem>
+                  <MenuItem value="4 Months">4 Months</MenuItem>
+                  <MenuItem value="5 Months">5 Months</MenuItem>
+                  <MenuItem value="6 Months">6 Months</MenuItem>
+                  <MenuItem value="7 Months">7 Months</MenuItem>
+                  <MenuItem value="8 Months">8 Months</MenuItem>
+                  <MenuItem value="9 Months">9 Months</MenuItem>
+                  <MenuItem value="10 Months">10 Months</MenuItem>
+                  <MenuItem value="11 Months">11 Months</MenuItem>
+                  <MenuItem value="1 Year">1 Year</MenuItem>
+                  <MenuItem value="2 Years">2 Years</MenuItem>
+                  <MenuItem value="3 Years">3 Years</MenuItem>
+                  <MenuItem value="4 Years">4 Years</MenuItem>
+                  <MenuItem value="5 Years">5 Years</MenuItem>
+                  <MenuItem value="6 Years">6 Years</MenuItem>
+                  <MenuItem value="7 Years">7 Years</MenuItem>
+                  <MenuItem value="8 Years">8 Years</MenuItem>
+                  <MenuItem value="9 Years">9 Years</MenuItem>
+                  <MenuItem value="10 Years">10 Years</MenuItem>
+                  <MenuItem value="11 Years">11 Years</MenuItem>
+                  <MenuItem value="12 Years">12 Years</MenuItem>
+                  <MenuItem value="13 Years">13 Years</MenuItem>
+                  <MenuItem value="14 Years">14 Years</MenuItem>
+                  <MenuItem value="15 Years">15 Years</MenuItem>
+                </Select>
+              </FormControl>
+            </Box>
             <Button
               type="submit"
               color="success"
@@ -173,11 +380,12 @@ const Details = ({ user, Pet }) => {
                 bottom: 0,
                 fontSize: 18,
               }}
+              onClick={handleSubmit}
             >
               <CheckCircle sx={{ mr: 1 }} />
               SAVE
             </Button>
-          </div>
+          </Box>
         </div>
       </Modal>
     </div>

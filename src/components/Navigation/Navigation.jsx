@@ -20,12 +20,14 @@ const Navigation = ({
   login,
   setLogin,
   user,
+  setUser,
   cart,
   setCart,
   setAlert,
   setOpenAlert,
   setSeverity,
 }) => {
+  const isShelter = user ? (user.isShelter ? true : false) : false;
   const [anchorEl, setAnchorEl] = React.useState(null);
   const open = Boolean(anchorEl);
   const Navigate = useNavigate();
@@ -38,6 +40,7 @@ const Navigation = ({
   const handleLogout = () => {
     setLogin(false);
     setCart([]);
+    setUser({});
     handleClose();
     Navigate("/login");
     setAlert("You have been Logged out");
@@ -92,14 +95,25 @@ const Navigation = ({
           >
             Shop
           </NavLink>
-          <NavLink
-            to="/adopt"
-            className={({ isActive }) =>
-              isActive ? activeClassName : undefined
-            }
-          >
-            Adopt
-          </NavLink>
+          {isShelter ? (
+            <NavLink
+              to="/shelter/applications"
+              className={({ isActive }) =>
+                isActive ? activeClassName : undefined
+              }
+            >
+              Applications
+            </NavLink>
+          ) : (
+            <NavLink
+              to="/adopt"
+              className={({ isActive }) =>
+                isActive ? activeClassName : undefined
+              }
+            >
+              Adopt
+            </NavLink>
+          )}
           <NavLink
             to="/community"
             className={({ isActive }) =>

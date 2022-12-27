@@ -1,12 +1,17 @@
 import React, { useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import "./ShopDetails.css";
 import axios from "axios";
-import { Box, Button, TextField } from "@mui/material";
-import { Add, AddShoppingCartSharp, Remove } from "@mui/icons-material";
+import { Box, Button, IconButton } from "@mui/material";
+import {
+  Add,
+  AddShoppingCartSharp,
+  ArrowBack,
+  Remove,
+} from "@mui/icons-material";
+import url from "../../../apiCalls/api";
 const ShopDetails = ({ Product, cart, setCart, login }) => {
   const Navigate = useNavigate();
-  const Server = "http://localhost:8000/";
   var [quantity, setQuantity] = useState(1);
   const decr = () => {
     if (quantity === 1) {
@@ -36,22 +41,20 @@ const ShopDetails = ({ Product, cart, setCart, login }) => {
       };
 
       axios
-        .post("http://localhost:8000/shop/addToCart", data)
+        .post(url + "/shop/cart/add", data)
         .then((res) => {
           if (res.data.status === "failed") {
             alert(res.data.message ? res.data.message : res.data.error);
           } else {
             const data = { _id: cart._id };
             // console.log(cart);
-            axios
-              .post("http://localhost:8000/shop/getCartById", data)
-              .then((res) => {
-                if (res.data.status === "failed") {
-                  alert(res.data.message);
-                } else {
-                  setCart(res.data.cart);
-                }
-              });
+            axios.post(url + "/shop/cart/show/id", data).then((res) => {
+              if (res.data.status === "failed") {
+                alert(res.data.message);
+              } else {
+                setCart(res.data.cart);
+              }
+            });
           }
         })
         .catch((err) => {
@@ -65,10 +68,13 @@ const ShopDetails = ({ Product, cart, setCart, login }) => {
   return (
     <Box className="Details" sx={{ overflow: "hidden" }}>
       <div className="Details-Left">
-        <Link to="/shop">
-          <i className="fa fa-arrow-left"></i>
-        </Link>
-        <img src={Server + Product.Image} alt={Product._id} />
+        <IconButton
+          sx={{ position: "absolute", top: 10, left: 10 }}
+          onClick={() => Navigate(-1)}
+        >
+          <ArrowBack />
+        </IconButton>
+        <img src={Product.Image} alt={Product._id} />
       </div>
       <Box
         className="Details-Right"

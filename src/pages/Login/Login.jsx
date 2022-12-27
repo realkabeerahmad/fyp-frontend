@@ -5,6 +5,7 @@ import { Link } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
 import "./Login.css";
 import { LoadingButton } from "@mui/lab";
+import url from "../../apiCalls/api";
 
 const Login = ({
   setAlert,
@@ -19,8 +20,8 @@ const Login = ({
   const Navigate = useNavigate();
   const [loading, setLoading] = useState(false);
   const [values, setValues] = useState({
-    email: "",
-    password: "",
+    email: "umarjamshaid25@gmail.com",
+    password: "Smaku-05",
   });
   const { email, password } = values;
   const handleChange = (value) => (e) => {
@@ -31,9 +32,8 @@ const Login = ({
     const { email, password } = values;
     if (email && password) {
       axios
-        .post("http://localhost:8000/auth/login", values)
+        .post(url + "/auth/login", values)
         .then((res) => {
-          console.log(res.data);
           setUser(res.data.user);
           if (res.data.status === "success") {
             setAlert("Welcome!!!");

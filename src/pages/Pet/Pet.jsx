@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { Link, NavLink, Outlet } from "react-router-dom";
 import Modal from "@mui/material/Modal";
 import "./Pet.css";
+import { Box } from "@mui/material";
 const Pet = ({ Pet }) => {
   const [open, setOpen] = useState(false);
   const handleOpen = () => setOpen(true);
@@ -20,7 +21,7 @@ const Pet = ({ Pet }) => {
             <img src={Pet.image} alt="" />
           </div>
           <Modal open={open} onClose={handleClose}>
-            <div className="pet-img-pop-wrapper">
+            <Box sx={{}}>
               <div className="pet-img-pop">
                 <div className="pet-img-pop-header">
                   <div className="pet-img-pop-close" onClick={handleClose}>
@@ -28,10 +29,10 @@ const Pet = ({ Pet }) => {
                   </div>
                 </div>
                 <div className="pet-img-pop-img">
-                  <img src={"http://localhost:8000/" + Pet.image} alt="" />
+                  <img src={Pet.image} alt="" />
                 </div>
               </div>
-            </div>
+            </Box>
           </Modal>
           <div className="pet-info-div">
             <div>
@@ -67,6 +68,7 @@ const Pet = ({ Pet }) => {
           >
             <div>Meal Timings</div>
           </NavLink>
+
           {Pet.type === "Dog" ? (
             <NavLink
               to="walk_timings"
@@ -79,6 +81,22 @@ const Pet = ({ Pet }) => {
           ) : (
             <></>
           )}
+          <NavLink
+            to="vaccination_history"
+            className={({ isActive }) =>
+              isActive ? activeClassName : undefined
+            }
+          >
+            <div>Vaccination History</div>
+          </NavLink>
+          <NavLink
+            to="vet_history"
+            className={({ isActive }) =>
+              isActive ? activeClassName : undefined
+            }
+          >
+            <div>Vet History</div>
+          </NavLink>
         </div>
         <div className="pet-links-outlet">
           <Outlet />

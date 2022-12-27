@@ -14,14 +14,14 @@ const ShopCard = ({ Product, setProduct }) => {
   }
 
   return (
-    <>
+    <Box sx={{ gridRow: "span 1", gridColumn: "span 1" }}>
       <Link
         exact
         to={`/product/${_id}`}
         onClick={setShopDetails}
         className="ShopCardWrap"
       >
-        <Card sx={{ width: 220, height: 270, m: 1 }}>
+        <Card sx={{ width: 220, height: 270 }}>
           <Box sx={{ height: 140, contain: "content" }}>
             <img src={Image} style={{ width: "100%" }} />
           </Box>
@@ -52,7 +52,7 @@ const ShopCard = ({ Product, setProduct }) => {
           </Box>
         </Card>
       </Link>
-    </>
+    </Box>
   );
 };
 

@@ -20,12 +20,16 @@ import {
   Search,
 } from "@mui/icons-material";
 import { LoadingButton } from "@mui/lab";
+import url from "../../apiCalls/api";
 
 // ----------------------------------------------------------
 
 const Shop = ({ setProduct }) => {
   const [values, setValues] = useState({
     text: "",
+    category: "",
+    min: 0,
+    max: 10000,
   });
   // ----------------------------------
   const [state, setState] = useState({
@@ -54,9 +58,8 @@ const Shop = ({ setProduct }) => {
   // ----------------------------------------
   const fetchItem = () => {
     axios
-      .get("http://localhost:8000/shop/showAllProducts")
+      .get(url + "/shop/show/all")
       .then((res) => {
-        console.log(res.data.products);
         setProducts(res.data.products);
       })
       .catch((err) => {
@@ -70,11 +73,28 @@ const Shop = ({ setProduct }) => {
     } else {
       const data = { searched_text: values.text };
       axios
-        .post("http://localhost:8000/shop/search", data)
+        .post(url + "/shop/search", data)
         .then((res) => {
-          console.log(res.data.products);
           setProducts(res.data.products);
-          // setValues({ text: "" });
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+    }
+  };
+  const filter = () => {
+    if (!values.category && !values.min && !values.max) {
+      return false;
+    } else {
+      const data = {
+        category: values.category,
+        from: values.min,
+        to: values.max,
+      };
+      axios
+        .post(url + "/shop/filter", data)
+        .then((res) => {
+          setProducts(res.data.products);
         })
         .catch((err) => {
           console.log(err);
@@ -132,12 +152,15 @@ const Shop = ({ setProduct }) => {
               <InputLabel id="type" color="success">
                 Category
               </InputLabel>
-              <Select label="Category">
-                <MenuItem>Food</MenuItem>
-                <MenuItem>Accessory</MenuItem>
-                <MenuItem>Toys</MenuItem>
-                <MenuItem>Cloths</MenuItem>
-                <MenuItem>Cloths</MenuItem>
+              <Select
+                label="Category"
+                value={values.category}
+                onChange={handleChange("category")}
+              >
+                <MenuItem value="Food">Food</MenuItem>
+                <MenuItem value="Accessory">Accessory</MenuItem>
+                <MenuItem value="Toys">Toys</MenuItem>
+                <MenuItem value="Clothes">Clothes</MenuItem>
               </Select>
             </FormControl>
             <Box
@@ -154,18 +177,23 @@ const Shop = ({ setProduct }) => {
                 label="Price From"
                 sx={{ width: "33%", m: 2 }}
                 color="success"
+                value={values.min}
+                onChange={handleChange("min")}
               ></TextField>
               <CompareArrowsOutlined />
               <TextField
                 label="Price To"
                 sx={{ width: "33%", m: 2 }}
                 color="success"
+                value={values.max}
+                onChange={handleChange("max")}
               ></TextField>
             </Box>
             <Button
               sx={{ width: "80%", m: 1 }}
               color="success"
               variant="contained"
+              onClick={filter}
             >
               Filter
             </Button>
@@ -210,26 +238,29 @@ const Shop = ({ setProduct }) => {
             justifyContent: "center",
           }}
         >
-          <Box
-            sx={{
-              display: "flex",
-              flexWrap: "wrap",
-              justifyContent: "center",
-            }}
-          >
-            {Products.length > 0 ? (
-              Products.map((Product) => {
+          {Products.length > 0 ? (
+            <Box
+              sx={{
+                display: "grid",
+                gridAutoColumns: "max-content",
+                gridTemplateColumns: "repeat(5, 1fr)",
+                gridGap: "25px",
+                gridAutoRows: "minmax(100px, auto)",
+                gridAutoFlow: "dense",
+              }}
+            >
+              {Products.map((Product) => {
                 return (
                   <ShopCard
                     Product={Product}
                     setProduct={setProduct}
                   ></ShopCard>
                 );
-              })
-            ) : (
-              <>No Product Found</>
-            )}
-          </Box>
+              })}
+            </Box>
+          ) : (
+            <Box>No Product Found</Box>
+          )}
           {/* <LoadingButton loading>Loading</LoadingButton> */}
         </Box>
       </Box>

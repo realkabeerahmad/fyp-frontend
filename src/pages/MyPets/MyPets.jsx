@@ -5,6 +5,7 @@ import "./MyPets.css";
 import axios from "axios";
 import AddCircleIcon from "@mui/icons-material/AddCircle";
 import { Box } from "@mui/material";
+import url from "../../apiCalls/api";
 
 // ---------------------------------------------------------
 
@@ -16,7 +17,7 @@ const MyPets = ({ user, setPet }) => {
   }, []);
   const fetchItem = () => {
     axios
-      .post("http://localhost:8000/pet/user/show", data)
+      .post(url + "/pet/user/show", data)
       .then((res) => {
         console.log(res.data);
         setPets(res.data.pets);
@@ -25,7 +26,6 @@ const MyPets = ({ user, setPet }) => {
         console.log(err);
       });
   };
-  console.log(Pets.length);
 
   return (
     <div className="mypets">

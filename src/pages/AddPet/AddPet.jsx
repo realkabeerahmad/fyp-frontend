@@ -8,16 +8,12 @@ import {
   InputLabel,
   MenuItem,
   Select,
-  TextareaAutosize,
   TextField,
 } from "@mui/material";
 import "./AddPet.css";
 import axios from "axios";
 import { useNavigate } from "react-router";
 import { Link } from "react-router-dom";
-import dayjs from "dayjs";
-import { DatePicker, LocalizationProvider } from "@mui/x-date-pickers";
-import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { CheckCircle } from "@mui/icons-material";
 import { catBreeds, dogBreeds, parrotBreed, rabbitBreed } from "./breeds";
 import { IMaskInput } from "react-imask";
@@ -67,6 +63,7 @@ const AddPet = ({ user }) => {
     image: "",
     passport: "",
   });
+  const [Breed, setBreed] = React.useState("");
 
   const [breedArr, SetBreedArr] = useState([
     { label: "Other", value: "Other" },
@@ -102,6 +99,10 @@ const AddPet = ({ user }) => {
     if (!values.image) {
       alert("Please Add an Image");
       return false;
+    }
+    if (values.bio.lenght > 100) {
+      alert("Bio Must be less then 100 characters");
+      return false;
     } else {
       const storageRef = ref(storage, `files/${values.image.name}`);
       const uploadTask = uploadBytesResumable(storageRef, values.image);
@@ -132,7 +133,7 @@ const AddPet = ({ user }) => {
         bio: values.bio,
         age: values.age,
         gender: values.gender,
-        breed: values.breed,
+        breed: Breed,
         type: values.type,
         passport: values.passport,
         age: values.age,
@@ -146,7 +147,6 @@ const AddPet = ({ user }) => {
             name: "",
             bio: "",
             gender: "",
-            breed: "",
             type: "",
             image: "",
             passport: "",
@@ -338,8 +338,10 @@ const AddPet = ({ user }) => {
                 }
                 color="success"
                 disableClearable
-                value={values.breed}
-                onChange={handleChange("breed")}
+                value={Breed}
+                onChange={(event, value) => {
+                  setBreed(value);
+                }}
                 sx={{ width: "40%", m: 1 }}
                 renderInput={(params) => (
                   <TextField
@@ -414,7 +416,7 @@ const AddPet = ({ user }) => {
                 value={values.bio}
                 onChange={handleChange("bio")}
                 required
-                helperText="Maximum 50 word"
+                helperText="Maximum 100 characters"
               />
             </Box>
             <Box

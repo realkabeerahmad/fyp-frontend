@@ -4,6 +4,7 @@ import "./GalleryImage.css";
 import axios from "axios";
 import { Close, Delete } from "@mui/icons-material";
 import { Box } from "@mui/material";
+import url from "../../apiCalls/api";
 
 const GalleryImage = ({ Image, Pet, setPet }) => {
   const [open, setOpen] = useState(false);
@@ -13,12 +14,12 @@ const GalleryImage = ({ Image, Pet, setPet }) => {
   const deleteImage = () => {
     const data = { _id: Pet._id, imageId: Image._id };
     axios
-      .post("http://localhost:8000/pet/deleteImage", data)
+      .post(url + "/pet/gallery/delete", data)
       .then((res) => {
         alert(res.data.message);
         handleClose();
         axios
-          .post("http://localhost:8000/pet/showPet", data)
+          .post(url + "/pet/show", data)
           .then((r) => {
             setPet(r.data.pet);
           })
@@ -34,7 +35,7 @@ const GalleryImage = ({ Image, Pet, setPet }) => {
   return (
     <div>
       <div className="gallery-image" onClick={handleOpen}>
-        <img src={"http://localhost:8000/" + Image.image} alt="" />
+        <img src={Image.image} alt="" />
       </div>
       <Modal open={open} onClose={handleClose}>
         <div className="gallery-image-zoom">
@@ -54,7 +55,7 @@ const GalleryImage = ({ Image, Pet, setPet }) => {
               className="gallery-image-zoom-img"
               sx={{ backgroundColor: "white" }}
             >
-              <img src={"http://localhost:8000/" + Image.image} alt="" />
+              <img src={Image.image} alt="" />
             </Box>
           </div>
         </div>

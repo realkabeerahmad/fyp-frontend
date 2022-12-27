@@ -4,6 +4,7 @@ import "./MyPetCard.css";
 import axios from "axios";
 import Modal from "@mui/material/Modal";
 import DeleteIcon from "@mui/icons-material/Delete";
+import url from "../../apiCalls/api";
 
 // -------------------------------------------------
 
@@ -19,13 +20,13 @@ const MyPetCard = ({ Pet, setPet, setPets, user }) => {
   const deletePet = () => {
     const data = { _id: Pet._id };
     axios
-      .post("http://localhost:8000/pet/deletePet", data)
+      .post(url + "/pet/delete", data)
       .then((res) => {
         alert(res.data.message);
         handleClose();
         const d = { userId: user._id };
         axios
-          .post("http://localhost:8000/pet/showAllPets", d)
+          .post(url + "/pet/user/show", d)
           .then((r) => {
             setPets(r.data.pets);
           })

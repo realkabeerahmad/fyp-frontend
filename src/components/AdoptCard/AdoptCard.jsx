@@ -1,3 +1,4 @@
+import { Box } from "@mui/material";
 import React from "react";
 import { Link } from "react-router-dom";
 import "./AdoptCard.css";
@@ -7,22 +8,49 @@ const AdoptCard = ({ Pet, setPet }) => {
     setPet(Pet);
   };
   return (
-    <div className="petAdoptionCard">
+    <Box
+      sx={{
+        width: "250px",
+        height: "300px",
+        backgroundColor: "white",
+        borderRadius: 2,
+        border: "1px solid #cfcfcf",
+        gridRow: "span 1",
+        gridColumn: "span 1",
+        contain: "content",
+      }}
+    >
       <Link
         to={`/adopt/${Pet._id}`}
         onClick={setPetDetails}
         className="PetCardWrap"
       >
-        <div className="pet-adopt">
-          <div className="pet-adopt-left">
+        <Box
+          sx={{
+            display: "flex",
+            flexDirection: "column",
+            contain: "content",
+          }}
+        >
+          <Box
+            sx={{
+              height: "150px",
+              contain: "content",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "space-between",
+              backgroundColor: "#cfcfcf",
+            }}
+          >
             <img
               src={Pet.image}
               alt={Pet._id}
               title={`Pet Name: ${Pet.name} | Shelter Name: ${Pet.shelterName}`}
+              style={{ width: "100%" }}
             />
-          </div>
-          <div className="pet-adopt-right">
-            <div className="pet-info-head">
+          </Box>
+          <Box sx={{ p: 1, contain: "content" }}>
+            <Box>
               <h2 className="petName">{Pet.name.toUpperCase()}</h2>
               {Pet.shelter.name ? (
                 <h4 className="ShelterName">
@@ -33,12 +61,15 @@ const AdoptCard = ({ Pet, setPet }) => {
               ) : (
                 <></>
               )}
-            </div>
-            <p className="description">{Pet.bio.slice(0, 50)}...</p>
-          </div>
-        </div>
+              <p style={{ lineBreak: "anywhere", textOverflow: "ellipsis" }}>
+                {Pet.bio.slice(0, 55)}
+                ...
+              </p>
+            </Box>
+          </Box>
+        </Box>
       </Link>
-    </div>
+    </Box>
   );
 };
 

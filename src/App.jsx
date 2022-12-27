@@ -28,6 +28,8 @@ import CheckOut from "./pages/CheckOut/CheckOut";
 import MyOrder from "./pages/MyOrder/MyOrder";
 import { loadStripe } from "@stripe/stripe-js";
 import { Elements } from "@stripe/react-stripe-js";
+import History from "./components/Vaccination/History";
+import Application from "./pages/Application/Application";
 // -------------------------------------------------------------------------
 // -------------------------------------------------------------------------
 // -------------------------------------------------------------------------
@@ -91,6 +93,7 @@ function App() {
             login={login}
             setLogin={setLogin}
             user={user}
+            setUser={setUser}
             setAlert={setAlert}
             setOpenAlert={setOpenAlert}
             setSeverity={setSeverity}
@@ -183,10 +186,17 @@ function App() {
               />
               {/* Pet Screen */}
               <Route path={"/my_pets/" + pet._id} element={<Pet Pet={pet} />}>
-                <Route index element={<DetailsandGallery />}></Route>
+                <Route
+                  index
+                  element={
+                    <DetailsandGallery user={user} Pet={pet} setPet={setPet} />
+                  }
+                ></Route>
                 <Route
                   path="details_and_gallery"
-                  element={<DetailsandGallery Pet={pet} setPet={setPet} />}
+                  element={
+                    <DetailsandGallery Pet={pet} setPet={setPet} user={user} />
+                  }
                 ></Route>
                 <Route
                   path="vaccination_and_medical_details"
@@ -199,6 +209,19 @@ function App() {
                 <Route
                   path="walk_timings"
                   element={<WalkTime Pet={pet} setPet={setPet} />}
+                ></Route>
+                <Route
+                  path="vaccination_history"
+                  element={
+                    <History
+                      history={pet.vaccination_history}
+                      page={"vaccination"}
+                    />
+                  }
+                ></Route>
+                <Route
+                  path="vet_history"
+                  element={<History history={pet.vet_history} page={"vet"} />}
                 ></Route>
               </Route>
 
@@ -253,6 +276,18 @@ function App() {
               {/* ----------------------------------------- */}
               {/* ----------------------------------------- */}
               <Route path="/adopt" element={<Adopt setPet={setPet} />}></Route>
+              {user ? (
+                user.isShelter ? (
+                  <Route
+                    path="/shelter/applications"
+                    element={<Application />}
+                  ></Route>
+                ) : (
+                  <></>
+                )
+              ) : (
+                LoginComponent
+              )}
               <Route
                 path={"/adopt/" + pet._id}
                 element={<AdoptDetails Pet={pet} />}

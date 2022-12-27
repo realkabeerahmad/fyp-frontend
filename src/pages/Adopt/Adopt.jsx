@@ -146,11 +146,22 @@ const Adopt = ({ setPet }) => {
           {/* </form> */}
         </Box>
       </Box>
-      <div className="pet-Adoption">
+      <Box
+        sx={{
+          display: "grid",
+          gridAutoColumns: "max-content",
+          gridTemplateColumns: "repeat(5, 1fr)",
+          gridGap: "25px",
+          gridAutoRows: "minmax(100px, auto)",
+          gridAutoFlow: "dense",
+          width: "100%",
+          p: 2,
+        }}
+      >
         {Pets?.map((Pet) => {
           return <AdoptCard Pet={Pet} setPet={setPet} />;
         })}
-      </div>
+      </Box>
     </>
   );
 };

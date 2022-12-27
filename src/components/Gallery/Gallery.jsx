@@ -6,7 +6,10 @@ import axios from "axios";
 import { Box, Button } from "@mui/material";
 import AddCircleIcon from "@mui/icons-material/AddCircle";
 import CheckCircleIcon from "@mui/icons-material/CheckCircle";
-
+import { storage } from "../../firebase";
+import { ref, getDownloadURL, uploadBytesResumable } from "firebase/storage";
+import { LoadingButton } from "@mui/lab";
+import url from "../../apiCalls/api";
 // --------------------------------------------------------
 
 const Gallery = ({ Pet, setPet }) => {
@@ -15,7 +18,10 @@ const Gallery = ({ Pet, setPet }) => {
     image: "",
   });
   const [open, setOpen] = useState(false);
+  const [loading, setLoading] = useState(false);
   const [_image, setimage] = useState();
+  const [imgUrl, setImgUrl] = useState(null);
+  const [progresspercent, setProgresspercent] = useState(0);
   const handleOpen = () => setOpen(true);
   const handleClose = () => {
     setimage();
@@ -32,14 +38,33 @@ const Gallery = ({ Pet, setPet }) => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    const formData = new FormData();
-    formData.append("_id", Pet._id);
-    formData.append("image", values.image);
-    const config = {
-      headers: { "content-type": "multipart/form-data" },
-    };
+    setLoading(true);
+    const storageRef = ref(storage, `files/${values.image.name}`);
+    const uploadTask = uploadBytesResumable(storageRef, values.image);
+
+    uploadTask.on(
+      "state_changed",
+      (snapshot) => {
+        const progress = Math.round(
+          (snapshot.bytesTransferred / snapshot.totalBytes) * 100
+        );
+        setProgresspercent(progress);
+      },
+      (error) => {
+        alert(error);
+      },
+      async () => {
+        await getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {
+          setImgUrl(downloadURL);
+          setLoading(false);
+        });
+      }
+    );
+    console.log(imgUrl);
+    if (imgUrl === null) return;
+    const formData = { _id: Pet._id, image: imgUrl };
     axios
-      .post("http://localhost:8000/pet/addImage", formData, config)
+      .post(url + "/pet/gallery/add", formData)
       .then((res) => {
         alert(res.data.message);
         handleClose();
@@ -49,7 +74,7 @@ const Gallery = ({ Pet, setPet }) => {
         });
         const data = { _id: Pet._id };
         axios
-          .post("http://localhost:8000/pet/showPet", data)
+          .post(url + "/pet/show", data)
           .then((r) => {
             setPet(r.data.pet);
           })
@@ -107,7 +132,7 @@ const Gallery = ({ Pet, setPet }) => {
                     />
                   </label>
                 </Box>
-                <Button
+                <LoadingButton
                   color="success"
                   fullWidth
                   variant="contained"
@@ -118,10 +143,11 @@ const Gallery = ({ Pet, setPet }) => {
                     fontSize: 18,
                   }}
                   onClick={handleSubmit}
+                  loading={loading}
                 >
                   <CheckCircleIcon sx={{ mr: 1 }} />
                   SAVE
-                </Button>
+                </LoadingButton>
               </form>
             </div>
           </div>

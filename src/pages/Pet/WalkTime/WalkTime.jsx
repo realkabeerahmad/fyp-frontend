@@ -36,7 +36,7 @@ const WalkTime = ({ Pet, setPet }) => {
     values._id = Pet._id;
     values.time = time;
     axios
-      .post("http://localhost:8000/pet/addWalkTime", values)
+      .post("http://localhost:8000/pet/walk/add", values)
       .then((res) => {
         alert(res.data.message);
         setValues({
@@ -46,7 +46,7 @@ const WalkTime = ({ Pet, setPet }) => {
         handleClose();
         const data = { _id: Pet._id };
         axios
-          .post("http://localhost:8000/pet/showPet", data)
+          .post("http://localhost:8000/pet/show", data)
           .then((r) => {
             setPet(r.data.pet);
           })
