@@ -20,7 +20,8 @@ const Login = ({
   const Navigate = useNavigate();
   const [loading, setLoading] = useState(false);
   const [values, setValues] = useState({
-    email: "umarjamshaid25@gmail.com",
+    email: "kabeerahmadofficial@gmail.com",
+    // email: "umarjamshaid25@gmail.com",
     password: "Smaku-05",
   });
   const { email, password } = values;
@@ -28,7 +29,6 @@ const Login = ({
     setValues({ ...values, [value]: e.target.value });
   };
   const login = () => {
-    setLoading(true);
     const { email, password } = values;
     if (email && password) {
       axios
@@ -39,25 +39,25 @@ const Login = ({
             setAlert("Welcome!!!");
             setOpenAlert(true);
             setSeverity("success");
-            Navigate("/my_pets");
-            setLoading(false);
             setLogin(true);
+            Navigate("/my_pets");
 
             const userId = { userId: res.data.user._id };
+            console.log(userId);
             axios
-              .post("http://localhost:8000/shop/cart", userId)
+              .post(url + "/shop/cart/new", userId)
               .then((res) => {
+                console.log("1");
                 if (res.data.status === "success") {
-                  axios
-                    .post("http://localhost:8000/shop/getCart", userId)
-                    .then((res) => {
-                      if (res.data.status === "success" && res.data.cart) {
-                        console.log(res.data.cart[0]);
-                        setCart(res.data.cart[0]);
-                      }
-                    });
+                  axios.post(url + "/shop/cart/show/id", userId).then((res) => {
+                    console.log("2");
+                    if (res.data.status === "success" && res.data.cart) {
+                      // console.log(res.data.cart[0]);
+                      setCart(res.data.cart[0]);
+                    }
+                  });
                 } else if (res.data.status === "failed" && res.data.cart) {
-                  console.log(res.data.cart);
+                  // console.log(res.data.cart);
                   setCart(res.data.cart);
                 }
               })
@@ -74,9 +74,11 @@ const Login = ({
             setSeverity("error");
             Navigate("/verify_otp");
           } else if (res.data.status === "failed") {
-            setAlert(res.data.message);
-            setOpenAlert(true);
-            setSeverity("error");
+            // setAlert(res.data.message);
+            // setOpenAlert(true);
+            // setSeverity("error");
+            // console.log("Here");
+            // return false;
           }
         })
         .catch((err) => console.log(err));
@@ -121,14 +123,14 @@ const Login = ({
             </Link>
             .
           </p>
-          <LoadingButton
+          <Button
             onClick={login}
             sx={{ width: 415, m: 1 }}
             color="success"
             variant="contained"
           >
             LOGIN
-          </LoadingButton>
+          </Button>
           <Divider sx={{ width: 415, m: 1 }}>OR</Divider>
           <div className="toRegister">
             Don't have an Account??? <Link to="/register">Create One</Link>

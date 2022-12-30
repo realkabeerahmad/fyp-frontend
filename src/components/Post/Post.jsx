@@ -8,7 +8,9 @@ import {
   MenuItem,
   TextField,
 } from "@mui/material";
+import axios from "axios";
 import * as React from "react";
+import url from "../../apiCalls/api";
 
 const Post = ({ post, user }) => {
   const [comment, setComment] = React.useState({
@@ -16,6 +18,11 @@ const Post = ({ post, user }) => {
     _id: post._id,
     content: "",
   });
+  const [like, setLike] = React.useState({
+    userId: user._id,
+    _id: post._id,
+  });
+  const [Post, setPost] = React.useState(post);
   const [first, setFirst] = React.useState(true);
   const [liked, setLiked] = React.useState(false);
   const [open, setOpen] = React.useState(false);
@@ -38,7 +45,6 @@ const Post = ({ post, user }) => {
   };
   if (post.likes.length > 0 && first) {
     for (let i = 0; i < post.likes.length; i++) {
-      // const element = post.likes[i];
       if (post.likes[i].userId === user._id) {
         setLiked(true);
         setFirst(false);
@@ -46,13 +52,59 @@ const Post = ({ post, user }) => {
       }
     }
   }
-  // setLiked(Object.values(post.likes).includes(user._id));
+  const addComment = () => {
+    if (!user._id) {
+      alert("Please Login");
+      return false;
+    } else {
+      axios
+        .post(url + "/community/comment", comment)
+        .then((res) => {
+          if (res.data.status === "success") {
+            setPost(res.data.data);
+            setComment({ userId: user._id, _id: post._id, content: "" });
+          } else {
+            alert(res.data.message);
+          }
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+    }
+  };
+  const addLike = () => {
+    if (!user._id) {
+      alert("Please Login");
+      return false;
+    } else {
+      var uri = "";
+      if (liked) {
+        uri = "/community/dislike";
+        setLiked(false);
+      } else {
+        uri = "/community/like";
+        setLiked(true);
+      }
+      axios
+        .post(url + uri, like)
+        .then((res) => {
+          if (res.data.status === "success") {
+            setPost(res.data.data);
+            // setComment({ userId: user._id, _id: post._id, content: "" });
+          } else {
+            alert(res.data.message);
+          }
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+    }
+  };
   return (
     <>
       <Box
         sx={{
           width: 400,
-          // height: 400,
           display: "flex",
           flexDirection: "column",
           backgroundColor: "white",
@@ -85,27 +137,27 @@ const Post = ({ post, user }) => {
             }}
           >
             <img
-              src={post.user.Image}
-              alt={post.user._id}
-              style={{ height: 25 }}
+              src={Post.user.Image}
+              alt={Post.user._id}
+              style={{ height: 35 }}
             />
           </Box>
           <Box sx={{ ml: 1 }}>
-            <h4>{post.user.name}</h4>
+            <h4>{Post.user.name}</h4>
             <Box sx={{ fontSize: 14, m: 0, p: 0 }}>
-              {post.createdAt.slice(0, 10)}
+              {Post.createdAt.slice(0, 10)}
             </Box>
           </Box>
 
-          <IconButton
+          {/* <IconButton
             sx={{ position: "absolute", right: 10 }}
             onClick={handleClick}
           >
             <MoreHoriz />
-          </IconButton>
+          </IconButton> */}
         </Box>
-        <Box sx={{ p: 1, textAlign: "justify" }}>{post.content}</Box>
-        {post.Image ? (
+        <Box sx={{ p: 1, textAlign: "justify" }}>{Post.content}</Box>
+        {Post.Image ? (
           <Box
             sx={{
               width: "100%",
@@ -118,8 +170,8 @@ const Post = ({ post, user }) => {
             }}
           >
             <img
-              src={post.Image}
-              alt={post._id}
+              src={Post.Image}
+              alt={Post._id}
               style={{
                 height: "100%",
               }}
@@ -136,8 +188,8 @@ const Post = ({ post, user }) => {
             borderTop: "1px solid #cfcfcf",
           }}
         >
-          <Box>{post.likes_count} Likes</Box>
-          <Box>{post.comments_count} Opinions</Box>
+          <Box>{Post.likes_count} Likes</Box>
+          <Box>{Post.comments_count} Opinions</Box>
         </Box>
         <Box
           sx={{
@@ -147,7 +199,10 @@ const Post = ({ post, user }) => {
             borderBottom: "1px solid #cfcfcf",
           }}
         >
-          <Button sx={{ color: liked ? "#e92e4a" : "grey !important" }}>
+          <Button
+            sx={{ color: liked ? "#e92e4a" : "grey !important" }}
+            onClick={addLike}
+          >
             <ThumbUp sx={{ mr: 1, fontSize: 18 }} /> Like
           </Button>
           <Button onClick={handleActive} sx={{ color: "grey !important" }}>
@@ -156,10 +211,13 @@ const Post = ({ post, user }) => {
         </Box>
         {active ? (
           <>
-            {post.comments.length > 0 ? (
-              post.comments.map((comment) => {
+            {Post.comments.length > 0 ? (
+              Post.comments.map((comment) => {
                 return (
-                  <Box sx={{ p: 1, borderBottom: "1px solid #cfcfcf" }}>
+                  <Box
+                    sx={{ p: 1, borderBottom: "1px solid #cfcfcf" }}
+                    key={comment._id}
+                  >
                     <Box sx={{ display: "flex", alignItems: "center" }}>
                       <Box
                         sx={{
@@ -186,9 +244,9 @@ const Post = ({ post, user }) => {
                       <Box sx={{ fontSize: 10, ml: 1 }}>
                         ({comment.createdAt.slice(0, 10)})
                       </Box>
-                      <IconButton sx={{ position: "absolute", right: 10 }}>
+                      {/* <IconButton sx={{ position: "absolute", right: 10 }}>
                         <Delete sx={{ fontSize: 15 }} />
-                      </IconButton>
+                      </IconButton> */}
                     </Box>
                     <Box sx={{ textAlign: "justify" }}>{comment.content}</Box>
                   </Box>
@@ -214,7 +272,11 @@ const Post = ({ post, user }) => {
                 onChange={handleChange("content")}
                 value={comment.content}
               />
-              <Button disabled={!comment.content} color="error">
+              <Button
+                disabled={!comment.content}
+                color="error"
+                onClick={addComment}
+              >
                 <Send />
               </Button>
             </Box>

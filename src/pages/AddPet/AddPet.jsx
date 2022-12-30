@@ -20,6 +20,7 @@ import { IMaskInput } from "react-imask";
 import PropTypes from "prop-types";
 import { storage } from "../../firebase";
 import { ref, getDownloadURL, uploadBytesResumable } from "firebase/storage";
+import url from "../../apiCalls/api";
 // --------------------------------------------------------------------
 // --------------------------------------------------------------------
 // ======================================================
@@ -139,7 +140,7 @@ const AddPet = ({ user }) => {
         age: values.age,
       };
       axios
-        .post("http://localhost:8000/pet/add", formData)
+        .post(url + "/pet/add", formData)
         .then((res) => {
           alert(res.data.message);
           setValues({

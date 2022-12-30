@@ -252,6 +252,7 @@ const Shop = ({ setProduct }) => {
               {Products.map((Product) => {
                 return (
                   <ShopCard
+                    key={Product._id}
                     Product={Product}
                     setProduct={setProduct}
                   ></ShopCard>

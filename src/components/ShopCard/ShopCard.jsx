@@ -7,12 +7,9 @@ import "./ShopCard.css";
 
 const ShopCard = ({ Product, setProduct }) => {
   const { _id, name, Image, quantity, price } = Product;
-  // const serverBaseURL = "http://localhost:8000/";
-
   function setShopDetails() {
     setProduct(Product);
   }
-
   return (
     <Box sx={{ gridRow: "span 1", gridColumn: "span 1" }}>
       <Link
@@ -28,7 +25,6 @@ const ShopCard = ({ Product, setProduct }) => {
           <Box
             sx={{
               display: "flex",
-              // alignItems: "center",
               flexDirection: "column",
               justifyContent: "space-between",
               p: 1,
@@ -40,7 +36,6 @@ const ShopCard = ({ Product, setProduct }) => {
                 display: "flex",
                 alignItems: "center",
                 justifyContent: "space-between",
-                // p: 1,
               }}
             >
               <h3>{name.slice(0, 10)}....</h3>

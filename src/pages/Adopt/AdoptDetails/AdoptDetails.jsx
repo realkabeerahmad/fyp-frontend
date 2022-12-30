@@ -1,7 +1,7 @@
 import { ArrowBack, Pets } from "@mui/icons-material";
 import { Button, IconButton } from "@mui/material";
 import React from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import "./AdoptDetails.css";
 
 // ---------------------------------------------------
@@ -58,9 +58,6 @@ const AdoptDetails = ({ Pet }) => {
           </table>
         </div>
         <div className="details-button">
-          {/* <div className="details-fav">
-            <i className="fa fa-heart"></i>
-          </div> */}
           <Button
             color="error"
             variant="contained"

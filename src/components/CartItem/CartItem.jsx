@@ -4,6 +4,7 @@ import { Link } from "react-router-dom";
 import DeleteIcon from "@mui/icons-material/Delete";
 import axios from "axios";
 import { Add, Remove } from "@mui/icons-material";
+import url from "../../apiCalls/api";
 
 // -------------------------------------------------
 
@@ -32,14 +33,14 @@ const CartItem = ({ product, cartId, setCart }) => {
       quantity: product.quantity,
     };
     axios
-      .post("http://localhost:8000/shop/deleteFromCart/", data)
+      .post(url + "/shop/cart/delete", data)
       .then((res) => {
         if (res.data.status === "failed") {
           alert(res.data.message);
         } else {
           const data = { _id: cartId };
           axios
-            .post("http://localhost:8000/shop/getCartById", data)
+            .post(url + "/shop/cart/show/id", data)
             .then((r) => {
               if (res.data.status === "failed") {
                 alert(res.data.message);
@@ -59,14 +60,14 @@ const CartItem = ({ product, cartId, setCart }) => {
   const updateQuantity = () => {
     const data = { cartId: cartId, _id: product._id, quantity: quantity };
     axios
-      .post("http://localhost:8000/shop/updateQuantity/", data)
+      .post(url + "/shop//cart/update/quantity", data)
       .then((res) => {
         if (res.data.status === "failed") {
           alert(res.data.message);
         } else {
           const data = { _id: cartId };
           axios
-            .post("http://localhost:8000/shop/getCartById", data)
+            .post(url + "/shop/cart/show/id", data)
             .then((r) => {
               if (res.data.status === "failed") {
                 alert(res.data.message);
@@ -111,11 +112,7 @@ const CartItem = ({ product, cartId, setCart }) => {
             backgroundColor: "#00000010",
           }}
         >
-          <img
-            src={"http://localhost:8000/" + product.Image}
-            alt=""
-            style={{ width: "100%" }}
-          />
+          <img src={product.Image} alt="" style={{ width: "100%" }} />
         </Box>
         <Box sx={{ width: "80%", p: 2 }}>
           <Box

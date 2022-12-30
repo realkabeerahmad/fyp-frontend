@@ -14,7 +14,7 @@ import DetailsandGallery from "./pages/Pet/DetailsandGallery/DetailsandGallery";
 import ForgetPass from "./pages/ForgetPass/ForgetPass";
 import VaccinationAndMedical from "./pages/Pet/VaccinationAndMedical/VaccinationAndMedical";
 import { Alert, Collapse, IconButton } from "@mui/material";
-import { useState } from "react";
+import React, { useState } from "react";
 import Otp from "./pages/Otp/Otp";
 import MealTime from "./pages/Pet/MealTime/MealTime";
 import WalkTime from "./pages/Pet/WalkTime/WalkTime";
@@ -280,7 +280,7 @@ function App() {
                 user.isShelter ? (
                   <Route
                     path="/shelter/applications"
-                    element={<Application />}
+                    element={<Application user={user} />}
                   ></Route>
                 ) : (
                   <></>
@@ -311,7 +311,22 @@ function App() {
                 path="/community"
                 element={<Community user={user} />}
               ></Route>
-              <Route path="/login" element={LoginComponent}></Route>
+              <Route
+                exact
+                path="/login"
+                element={
+                  <Login
+                    setAlert={setAlert}
+                    setOpenAlert={setOpenAlert}
+                    setSeverity={setSeverity}
+                    setLogin={setLogin}
+                    setUser={setUser}
+                    user={user}
+                    setCart={setCart}
+                    setUserDetails={setUserDetails}
+                  />
+                }
+              />
               <Route path="/forget_password" element={<ForgetPass />}></Route>
               <Route
                 path="/verify_otp"
@@ -343,7 +358,6 @@ function App() {
               <Route path="*" element={<ErrorPage />}></Route>
             </Routes>
           </div>
-          {/* <Footer></Footer> */}
         </BrowserRouter>
       </>
     </Elements>

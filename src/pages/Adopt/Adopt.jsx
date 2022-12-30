@@ -13,6 +13,7 @@ import {
   TextField,
 } from "@mui/material";
 import { FilterList, Search } from "@mui/icons-material";
+import url from "../../apiCalls/api";
 
 // --------------------------------------------------------------
 
@@ -42,7 +43,7 @@ const Adopt = ({ setPet }) => {
   }, []);
   const fetchItem = () => {
     axios
-      .get("http://localhost:8000/adoption/showAllPets/")
+      .get(url + "/adoption/adopt/show/all")
       .then((res) => {
         console.log(res.data.pets);
         setPets(res.data.pets);
@@ -112,18 +113,6 @@ const Adopt = ({ setPet }) => {
             >
               Filter
             </Button>
-            {/* <TextField
-              sx={{
-                width: "80%",
-                m: 2,
-              }}
-            ></TextField>
-            <TextField
-              sx={{
-                width: "80%",
-                m: 1,
-              }}
-            ></TextField> */}
           </Box>
         </SwipeableDrawer>
         <Box sx={{ width: "80%", display: "flex" }}>

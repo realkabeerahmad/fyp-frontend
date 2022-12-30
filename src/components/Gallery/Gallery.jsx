@@ -18,7 +18,6 @@ const Gallery = ({ Pet, setPet }) => {
     image: "",
   });
   const [open, setOpen] = useState(false);
-  const [loading, setLoading] = useState(false);
   const [_image, setimage] = useState();
   const [imgUrl, setImgUrl] = useState(null);
   const [progresspercent, setProgresspercent] = useState(0);
@@ -35,6 +34,7 @@ const Gallery = ({ Pet, setPet }) => {
     });
     reader.readAsDataURL(e.target.files[0]);
   };
+  const [loading, setLoading] = useState(false);
 
   const handleSubmit = (e) => {
     e.preventDefault();

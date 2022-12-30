@@ -5,6 +5,7 @@ import axios from "axios";
 import Modal from "@mui/material/Modal";
 import DeleteIcon from "@mui/icons-material/Delete";
 import url from "../../apiCalls/api";
+import { Box } from "@mui/material";
 
 // -------------------------------------------------
 
@@ -57,6 +58,11 @@ const MyPetCard = ({ Pet, setPet, setPets, user }) => {
       <button className="delete-btn" onClick={handleOpen}>
         <DeleteIcon />
       </button>
+      <Box
+        sx={{ position: "absolute", bottom: 10, right: 10, color: "#e92e4a" }}
+      >
+        {Pet.rehome ? <>Rehomed</> : <></>}
+      </Box>
       <Modal open={open} onClose={handleClose}>
         <div className="add">
           <div className="confirm">

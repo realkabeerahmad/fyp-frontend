@@ -1,6 +1,5 @@
 import {
   Table,
-  th,
   TableRow,
   TableCell,
   TableHead,

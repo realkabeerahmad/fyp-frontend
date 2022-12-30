@@ -5,12 +5,9 @@ import {
   Select,
   TextField,
   Button,
-  FormLabel,
-  RadioGroup,
-  FormControlLabel,
-  Radio,
   Box,
   Input,
+  IconButton,
 } from "@mui/material";
 import { DatePicker, LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
@@ -19,9 +16,10 @@ import React, { useState } from "react";
 import { useNavigate } from "react-router";
 import axios from "axios";
 import { Link } from "react-router-dom";
-import ReactInputMask from "react-input-mask";
 import { IMaskInput } from "react-imask";
 import PropTypes from "prop-types";
+import url from "../../../apiCalls/api";
+import { ArrowLeft } from "@mui/icons-material";
 // ======================================================
 const TextMaskCustom = React.forwardRef(function TextMaskCustom(props, ref) {
   const { onChange, ...other } = props;
@@ -43,22 +41,40 @@ TextMaskCustom.propTypes = {
   name: PropTypes.string.isRequired,
   onChange: PropTypes.func.isRequired,
 };
+const TextMaskCustomPhone = React.forwardRef(function TextMaskCustom(
+  props,
+  ref
+) {
+  const { onChange, ...other } = props;
+  return (
+    <IMaskInput
+      {...other}
+      mask="+92(000)-0000-000"
+      definitions={{
+        "#": /[1-9]/,
+      }}
+      inputRef={ref}
+      onAccept={(value) => onChange({ target: { name: props.name, value } })}
+      overwrite
+    />
+  );
+});
+
+TextMaskCustomPhone.propTypes = {
+  name: PropTypes.string.isRequired,
+  onChange: PropTypes.func.isRequired,
+};
 // =====================================================
 const AdoptApplication = ({ user, Pet, setUser }) => {
   const Navigate = useNavigate();
-  // const [Age, setAge] = useState({
-  //   error: false,
-  //   helpr: "",
-  // });
   const [values, setValues] = useState({
     petId: Pet._id,
     userId: user._id,
+    shelterId: Pet.shelter._id,
     dob: dayjs("2019-01-20T21:11:54"),
     cnic: user.cnic ? user.cnic : "",
     gender: user.gender ? user.gender : "",
-    // gender: "",
-    house_type: "",
-    isYardFenced: "",
+    phone: user.phone ? user.phone : "",
   });
 
   // =================================================================
@@ -79,10 +95,9 @@ const AdoptApplication = ({ user, Pet, setUser }) => {
     }
     if (
       date > dayjs("2004-01-01T00:00:00") ||
-      values.isYardFenced === "" ||
       values.gender === "" ||
       values.cnic === "" ||
-      values.house_type === ""
+      values.phone === ""
     ) {
       if (date > dayjs("2004-01-01T00:00:00")) {
         alert("Must be 18+ for adoption");
@@ -93,33 +108,34 @@ const AdoptApplication = ({ user, Pet, setUser }) => {
     } else {
       const data = {
         petId: Pet._id,
+        petName: Pet.name,
         userId: user._id,
+        shelterId: Pet.shelter._id,
         dob: date,
         cnic: values.cnic,
         gender: values.gender,
-        house_type: values.house_type,
-        isYardFenced: values.isYardFenced,
+        phone: values.phone,
       };
       axios
-        .post("http://localhost:8000/adoption/adoptPet", data)
+        .post(url + "/adoption/adopt", data)
         .then((res) => {
           if (res.data.status === "failed") {
             alert(res.data.message);
             Navigate("/adopt");
           } else {
             const data = { _id: user._id };
-            axios
-              .post("http://localhost:8000/auth/showUser", data)
-              .then((res) => {
-                if (res.data.status === "success") {
-                  setUser(res.data.user);
-                } else {
-                  alert("User not Updated");
-                }
-              });
+            axios.post(url + "/auth/showUser", data).then((res) => {
+              if (res.data.status === "success") {
+                setUser(res.data.user);
+              } else {
+                alert("User not Updated");
+              }
+            });
             setValues({
               petId: Pet._id,
+              petName: Pet.name,
               userId: user._id,
+              shelterId: Pet.shelter._id,
               dob: dayjs("2019-01-20T21:11:54"),
               cnic: "",
               gender: "",
@@ -127,7 +143,7 @@ const AdoptApplication = ({ user, Pet, setUser }) => {
               isYardFenced: "",
             });
             alert(res.data.message);
-            Navigate("/adopt");
+            Navigate(-1);
           }
         })
         .catch((err) => {
@@ -145,9 +161,8 @@ const AdoptApplication = ({ user, Pet, setUser }) => {
         height: "calc(100vh - 70px)",
       }}
     >
-      <Link
-        to="/adopt"
-        style={{
+      <IconButton
+        sx={{
           color: "#e92e4a",
           fontSize: 25,
           position: "absolute",
@@ -155,8 +170,8 @@ const AdoptApplication = ({ user, Pet, setUser }) => {
           left: 10,
         }}
       >
-        <i className="fa fa-arrow-left"></i>
-      </Link>
+        <ArrowLeft />
+      </IconButton>
       <Box sx={{ width: "80%" }}>
         <form
           onSubmit={handleSubmit}
@@ -234,7 +249,6 @@ const AdoptApplication = ({ user, Pet, setUser }) => {
                   id="gender"
                   variant="standard"
                   color="success"
-                  // sx={{ width: "84%", m: 1 }}
                   value={user.gender ? user.gender : values.gender}
                   onChange={handleChange("gender")}
                   required
@@ -243,18 +257,6 @@ const AdoptApplication = ({ user, Pet, setUser }) => {
                   <MenuItem value="Female">Female</MenuItem>
                 </Select>
               </FormControl>
-              {/* <TextField
-                label="User Age"
-                variant="standard"
-                color="success"
-                sx={{ width: "45%", m: 1 }}
-                name="name"
-                type="text"
-                value={user.age ? user.age : values.age}
-                // disabled
-                required
-              /> */}
-
               <FormControl color="success" sx={{ width: "45%", m: 1 }}>
                 <InputLabel htmlFor="formatted-text-mask-input">
                   User CNIC Number
@@ -266,70 +268,24 @@ const AdoptApplication = ({ user, Pet, setUser }) => {
                   name="textmask"
                   id="formatted-text-mask-input"
                   inputComponent={TextMaskCustom}
-                  // disabled={user.cnic ? true : false}
                 />
               </FormControl>
-              {/* <TextField
-                label="User CNIC"
-                variant="standard"
-                color="success"
-                sx={{ width: "45%", m: 1 }}
-                name="name"
-                type="text"
-                value={user.cnic ? user.cnic : values.cnin}
-                onChange={handleChange("cnic")}
-                // disabled
-                required
-              ></TextField> */}
-              {/* <ReactInputMask
-                mask="99999-9999999-9"
-                maskChar=" "
-                value={user.cnic ? user.cnic : values.cnin}
-                onChange={handleChange("cnic")}
-              />
-              <ReactInputMask mask="0399-9999999" maskChar=" " /> */}
             </div>
             <div>
-              <FormControl sx={{ width: "45%", m: 1 }}>
-                <InputLabel id="house-type" color="success">
-                  User House Type
+              <FormControl color="success" sx={{ width: "45%", m: 1 }}>
+                <InputLabel htmlFor="formatted-text-mask-input">
+                  Phone Number
                 </InputLabel>
-                <Select
-                  label="User House Type"
-                  name="house-type"
-                  id="house-type"
+                <Input
                   variant="standard"
-                  color="success"
-                  // sx={{ width: "84%", m: 1 }}
-                  value={values.house_type}
-                  onChange={handleChange("house_type")}
+                  value={values.phone}
+                  onChange={handleChange("phone")}
+                  name="textmask"
+                  id="formatted-text-mask-input"
+                  inputComponent={TextMaskCustomPhone}
                   required
-                >
-                  <MenuItem value="Own">Own</MenuItem>
-                  <MenuItem value="Rent">Rent</MenuItem>
-                  <MenuItem value="Shared">Shared</MenuItem>
-                </Select>
-              </FormControl>
-              <FormControl component="fieldset" sx={{ width: "45%", m: 1 }}>
-                <FormLabel color="success">Is Yard Fenced</FormLabel>
-                <RadioGroup
-                  name="spacing"
-                  aria-label="spacing"
-                  color="success"
-                  value={values.isYardFenced}
-                  onChange={handleChange("isYardFenced")}
-                  row
-                >
-                  {["Yes", "No"].map((value) => (
-                    <FormControlLabel
-                      key={value}
-                      color="success"
-                      value={value.toString()}
-                      control={<Radio color="success" />}
-                      label={value.toString()}
-                    />
-                  ))}
-                </RadioGroup>
+                  disabled={user.phone ? true : false}
+                />
               </FormControl>
             </div>
             <Box

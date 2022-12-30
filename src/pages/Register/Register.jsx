@@ -10,6 +10,7 @@ import { Link } from "react-router-dom";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import "./Register.css";
+import url from "../../apiCalls/api";
 
 const Register = ({ setAlert, setOpenAlert, setSeverity, setUserDetails }) => {
   const [loading, setLoading] = useState(false);
@@ -126,7 +127,7 @@ const Register = ({ setAlert, setOpenAlert, setSeverity, setUserDetails }) => {
       ) {
         setLoading(true);
         axios
-          .post("http://localhost:8000/auth/register", values)
+          .post(url + "/auth/register", values)
           .then((res) => {
             if (res.data.status === "pending") {
               setUserDetails({

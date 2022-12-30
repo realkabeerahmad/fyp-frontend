@@ -19,7 +19,6 @@ const MyPets = ({ user, setPet }) => {
     axios
       .post(url + "/pet/user/show", data)
       .then((res) => {
-        console.log(res.data);
         setPets(res.data.pets);
       })
       .catch((err) => {

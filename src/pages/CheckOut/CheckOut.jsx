@@ -6,19 +6,20 @@ import {
   FormControl,
   FormControlLabel,
   FormLabel,
+  IconButton,
   Input,
   InputLabel,
   Radio,
   RadioGroup,
   TextField,
 } from "@mui/material";
-import { ShoppingCartCheckout } from "@mui/icons-material";
-import StripeCheckout from "react-stripe-checkout";
+import { LocationOn, ShoppingCartCheckout } from "@mui/icons-material";
+// import StripeCheckout from "react-stripe-checkout";
 import {
   CardCvcElement,
   CardExpiryElement,
   CardNumberElement,
-  Elements,
+  // Elements,
   useElements,
   useStripe,
 } from "@stripe/react-stripe-js";
@@ -57,7 +58,7 @@ const CheckOut = ({
   setOpenAlert,
   setSeverity,
 }) => {
-  const [loading, setLoading] = useState(false);
+  // const [loading, setLoading] = useState(false);
   // ==============================================
   const pay = () => {
     const data = {
@@ -110,6 +111,42 @@ const CheckOut = ({
   if (subTotal != 0) {
     Total = subTotal + shipping;
   }
+  const setAddress = () => {
+    navigator.geolocation.getCurrentPosition(function (position) {
+      // console.log("Latitude is :", position.coords.latitude);
+      // console.log("Longitude is :", position.coords.longitude);
+
+      const options = {
+        method: "GET",
+        url: "https://geocodeapi.p.rapidapi.com/GetNearestCities",
+        params: {
+          latitude: position.coords.latitude,
+          longitude: position.coords.longitude,
+          range: "0",
+        },
+        headers: {
+          "X-RapidAPI-Key":
+            "1e25070613msh6eaaa59c8328268p1bc72cjsna2eb7c59239b",
+          "X-RapidAPI-Host": "geocodeapi.p.rapidapi.com",
+        },
+      };
+
+      axios
+        .request(options)
+        .then(function (response) {
+          console.log(response.data);
+          setValues({
+            fullName: values.fullName,
+            address: `${response.data[0].City}, ${response.data[0].Country}`,
+            phoneNumber: values.phoneNumber,
+            Payment: values.Payment,
+          });
+        })
+        .catch(function (error) {
+          console.error(error);
+        });
+    });
+  };
   const checkOut = () => {
     if (cart.products.length <= 0) {
       alert("Cart Empty");
@@ -215,17 +252,29 @@ const CheckOut = ({
             onChange={handleChange("fullName")}
             required
           />
-          <TextField
-            label="Address"
-            variant="standard"
-            color="success"
-            name=""
-            type="text"
-            sx={{ width: "47.5%", m: 1 }}
-            value={values.address}
-            onChange={handleChange("address")}
-            required
-          />
+          <Box
+            sx={{
+              width: "47.5%",
+              display: "inline-flex",
+              alignItems: "center",
+              justifyContent: "center",
+            }}
+          >
+            <TextField
+              label="Address"
+              variant="standard"
+              color="success"
+              name=""
+              type="text"
+              sx={{ width: "100%", m: 1 }}
+              value={values.address}
+              onChange={handleChange("address")}
+              required
+            />
+            <IconButton onClick={setAddress}>
+              <LocationOn />
+            </IconButton>
+          </Box>
           <FormControl color="success" sx={{ width: "47.5%", m: 1 }}>
             <InputLabel htmlFor="formatted-text-mask-input">
               Phone Number
