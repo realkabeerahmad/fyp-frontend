@@ -155,6 +155,36 @@ const Details = ({ user, Pet, setPet }) => {
     }
   };
 
+  const rehome = () => {
+    const data = { _id: Pet._id };
+    axios
+      .post(url + "/pet/rehome", data)
+      .then((res) => {
+        if (res.data.status === "success") {
+          setPet(res.data.data);
+        } else {
+          alert(res.data.message);
+        }
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  };
+  const undoRehome = () => {
+    const data = { _id: Pet._id };
+    axios
+      .post(url + "/pet/rehome/undo", data)
+      .then((res) => {
+        if (res.data.status === "success") {
+          setPet(res.data.data);
+        } else {
+          alert(res.data.message);
+        }
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  };
   return (
     <div className="details-about-pet">
       <div className="details-header">
@@ -164,7 +194,7 @@ const Details = ({ user, Pet, setPet }) => {
         <Box>
           {!Pet.rehome && user.isShelter ? (
             <Button
-              onClick={false}
+              onClick={rehome}
               color="error"
               // variant="contained"
               sx={{ fontSize: 12, mr: 1 }}
@@ -173,7 +203,7 @@ const Details = ({ user, Pet, setPet }) => {
             </Button>
           ) : Pet.rehome && user.isShelter ? (
             <Button
-              onClick={false}
+              onClick={undoRehome}
               color="error"
               // variant="contained"
               sx={{ fontSize: 12, mr: 1 }}

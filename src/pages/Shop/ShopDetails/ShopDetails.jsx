@@ -8,10 +8,28 @@ import {
   AddShoppingCartSharp,
   ArrowBack,
   Remove,
+  Favorite,
+  FavoriteBorder,
 } from "@mui/icons-material";
 import url from "../../../apiCalls/api";
-const ShopDetails = ({ Product, cart, setCart, login }) => {
+const ShopDetails = ({ Product, cart, setCart, login, user, setUser }) => {
   const Navigate = useNavigate();
+
+  var [liked, setLiked] = useState(false);
+  var [first, setFirst] = useState(true);
+  if (login) {
+    if (user.product_wish.length > 0 && first) {
+      for (let i = 0; i < user.product_wish.length; i++) {
+        if (user.product_wish[i]._id === Product._id) {
+          setLiked(true);
+          // console.log(liked);
+          break;
+        }
+      }
+
+      setFirst(false);
+    }
+  }
   var [quantity, setQuantity] = useState(1);
   const decr = () => {
     if (quantity === 1) {
@@ -60,6 +78,32 @@ const ShopDetails = ({ Product, cart, setCart, login }) => {
         .catch((err) => {
           alert(err);
           console.log("Not Done");
+        });
+    } else {
+      Navigate("/login");
+    }
+  };
+  const wish = () => {
+    if (login) {
+      const data = { userId: user._id, _id: Product._id };
+      axios
+        .post(url + "/shop/wish", data)
+        .then((res) => {
+          if (res.data.status === "success") {
+            setUser(res.data.data);
+            // setFirst(false);
+            if (res.data.message === "Added to WishList") {
+              setLiked(true);
+            } else if (res.data.message === "Removed from WishList") {
+              setLiked(false);
+            }
+            // alert(res.data.message);
+          } else {
+            alert(res.data.message);
+          }
+        })
+        .catch((err) => {
+          console.log(err.message);
         });
     } else {
       Navigate("/login");
@@ -143,13 +187,29 @@ const ShopDetails = ({ Product, cart, setCart, login }) => {
           </div>
           <div className="details-buyNow">BUY NOW</div> */}
           <Button
+            // color={liked ? "success" : "error"}
+            color="error"
+            variant="text"
+            sx={{
+              fontSize: 20,
+              position: "sticky",
+              bottom: 0,
+              width: "20%",
+              justifyContent: "center",
+            }}
+            onClick={wish}
+            disabled={Product.quantity <= 0 ? true : false}
+          >
+            {liked ? <Favorite /> : <FavoriteBorder />}
+          </Button>
+          <Button
             color="error"
             variant="contained"
             sx={{
               fontSize: 20,
               position: "sticky",
               bottom: 0,
-              width: "100%",
+              width: "80%",
               justifyContent: "center",
             }}
             onClick={addToCart}

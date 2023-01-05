@@ -145,7 +145,7 @@ const Community = ({ user }) => {
             // sx={{ ml: -5 }}
             color="error"
             onClick={addPost}
-            disabled={!values.content || !values.Image ? true : false}
+            disabled={!values.content ? true : false}
             loading={loading}
           >
             <AddCircle />

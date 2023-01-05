@@ -1,13 +1,56 @@
-import { ArrowBack, Pets } from "@mui/icons-material";
+import { ArrowBack, Pets, Favorite, FavoriteBorder } from "@mui/icons-material";
 import { Button, IconButton } from "@mui/material";
-import React from "react";
+import axios from "axios";
+import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import url from "../../../apiCalls/api";
 import "./AdoptDetails.css";
 
 // ---------------------------------------------------
 
-const AdoptDetails = ({ Pet }) => {
+const AdoptDetails = ({ Pet, user, setUser, login }) => {
   const Navigate = useNavigate();
+  var [liked, setLiked] = useState(false);
+  var [first, setFirst] = useState(true);
+  if (login) {
+    if (user.pet_wish.length > 0 && first) {
+      for (let i = 0; i < user.pet_wish.length; i++) {
+        if (user.pet_wish[i]._id === Pet._id) {
+          setLiked(true);
+          // console.log(liked);
+          break;
+        }
+      }
+
+      setFirst(false);
+    }
+  }
+  const wish = () => {
+    if (login) {
+      const data = { userId: user._id, _id: Pet._id };
+      axios
+        .post(url + "/pet/wish", data)
+        .then((res) => {
+          if (res.data.status === "success") {
+            setUser(res.data.data);
+            // setFirst(false);
+            if (res.data.message === "Added to WishList") {
+              setLiked(true);
+            } else if (res.data.message === "Removed from WishList") {
+              setLiked(false);
+            }
+            // alert(res.data.message);
+          } else {
+            alert(res.data.message);
+          }
+        })
+        .catch((err) => {
+          console.log(err.message);
+        });
+    } else {
+      Navigate("/login");
+    }
+  };
   return (
     <div className="Details">
       <div className="Details-Left">
@@ -60,12 +103,26 @@ const AdoptDetails = ({ Pet }) => {
         <div className="details-button">
           <Button
             color="error"
+            variant="text"
+            sx={{
+              fontSize: 20,
+              position: "sticky",
+              bottom: 0,
+              width: "20%",
+              justifyContent: "center",
+            }}
+            onClick={wish}
+          >
+            {liked ? <Favorite /> : <FavoriteBorder />}
+          </Button>
+          <Button
+            color="error"
             variant="contained"
             sx={{
               fontSize: 20,
               position: "sticky",
               bottom: 0,
-              width: "100%",
+              width: "80%",
               justifyContent: "center",
             }}
             onClick={() => Navigate("/adopt/" + Pet._id + "/application")}

@@ -30,6 +30,7 @@ import { loadStripe } from "@stripe/stripe-js";
 import { Elements } from "@stripe/react-stripe-js";
 import History from "./components/Vaccination/History";
 import Application from "./pages/Application/Application";
+import WishList from "./pages/WishList/WishList";
 // -------------------------------------------------------------------------
 // -------------------------------------------------------------------------
 // -------------------------------------------------------------------------
@@ -164,6 +165,16 @@ function App() {
                   )
                 }
               ></Route>
+              <Route
+                path="/user/wishlist"
+                element={
+                  login ? (
+                    <WishList user={user} setUser={setUser} />
+                  ) : (
+                    LoginComponent
+                  )
+                }
+              ></Route>
               {/* My Pets */}
               {/* ----------------------------------------- */}
               {/* ----------------------------------------- */}
@@ -265,6 +276,7 @@ function App() {
                     cart={cart}
                     setCart={setCart}
                     user={user}
+                    setUser={setUser}
                     login={login}
                   />
                 }
@@ -290,7 +302,14 @@ function App() {
               )}
               <Route
                 path={"/adopt/" + pet._id}
-                element={<AdoptDetails Pet={pet} />}
+                element={
+                  <AdoptDetails
+                    Pet={pet}
+                    user={user}
+                    setUser={setUser}
+                    login={login}
+                  />
+                }
               ></Route>
               {/* Auth */}
               {/* ----------------------------------------- */}

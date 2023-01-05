@@ -202,7 +202,7 @@ const Navigation = ({
                       {user.name}
                     </MenuItem>
                   </Link>
-                  <Link to="/Wishlist" style={{ color: "black" }}>
+                  <Link to="/user/wishlist" style={{ color: "black" }}>
                     <MenuItem onClick={handleClose} sx={style}>
                       My Wishlist
                     </MenuItem>
