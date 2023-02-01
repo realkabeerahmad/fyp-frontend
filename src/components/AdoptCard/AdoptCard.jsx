@@ -9,6 +9,7 @@ const AdoptCard = ({ Pet, setPet }) => {
   };
   return (
     <Box
+      className="Hover"
       sx={{
         width: "250px",
         height: "300px",
@@ -18,20 +19,17 @@ const AdoptCard = ({ Pet, setPet }) => {
         gridRow: "span 1",
         gridColumn: "span 1",
         contain: "content",
-      }}
-    >
+      }}>
       <Link
         to={`/adopt/${Pet._id}`}
         onClick={setPetDetails}
-        className="PetCardWrap"
-      >
+        className="PetCardWrap">
         <Box
           sx={{
             display: "flex",
             flexDirection: "column",
             contain: "content",
-          }}
-        >
+          }}>
           <Box
             sx={{
               height: "150px",
@@ -40,8 +38,7 @@ const AdoptCard = ({ Pet, setPet }) => {
               alignItems: "center",
               justifyContent: "space-between",
               backgroundColor: "#cfcfcf",
-            }}
-          >
+            }}>
             <img
               src={Pet.image}
               alt={Pet._id}

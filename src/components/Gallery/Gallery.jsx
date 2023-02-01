@@ -12,7 +12,7 @@ import { LoadingButton } from "@mui/lab";
 import url from "../../apiCalls/api";
 // --------------------------------------------------------
 
-const Gallery = ({ Pet, setPet }) => {
+const Gallery = ({ Pet, setPet,user }) => {
   const [values, setValues] = useState({
     _id: "",
     image: "",
@@ -101,7 +101,7 @@ const Gallery = ({ Pet, setPet }) => {
         <div className="gallery-wrapper">
           <div className="gallery-main">
             {Pet.gallery.map((Image) => {
-              return <GalleryImage Image={Image} Pet={Pet} setPet={setPet} />;
+              return <GalleryImage Image={Image} Pet={Pet} setPet={setPet} user={ user} />;
             })}
           </div>
         </div>

@@ -10,6 +10,7 @@ import TableRow from "@mui/material/TableRow";
 import axios from "axios";
 import { Box } from "@mui/system";
 import { Link } from "react-router-dom";
+import url from "../../apiCalls/api";
 const columns = [
   { id: "Name", label: "Name", minWidth: 150, align: "center" },
   { id: "Address", label: "Address", minWidth: 150, align: "center" },
@@ -61,12 +62,10 @@ export default function MyOrder({ user }) {
 
   const fetchUsers = () => {
     const data = { userId: user._id };
-    axios
-      .post("http://localhost:8000/shop/showUserOrders", data)
-      .then((res) => {
-        console.log(res.data.orders);
-        setUsers(res.data.orders);
-      });
+    axios.post(url + "/shop/order/show/user", data).then((res) => {
+      console.log(res.data.orders);
+      setUsers(res.data.orders);
+    });
   };
 
   return (
@@ -81,8 +80,7 @@ export default function MyOrder({ user }) {
           p: 1,
           backgroundColor: "white",
           borderBottom: "1px solid #c2c2c2",
-        }}
-      >
+        }}>
         <h2>My Orders</h2>
       </Box>
       <Paper sx={{ width: "100%", overflow: "hidden" }}>
@@ -94,8 +92,7 @@ export default function MyOrder({ user }) {
                   <TableCell
                     key={column.id}
                     align={column.align}
-                    style={{ minWidth: column.minWidth, fontWeight: "700" }}
-                  >
+                    style={{ minWidth: column.minWidth, fontWeight: "700" }}>
                     {column.label}
                   </TableCell>
                 ))}
@@ -113,8 +110,7 @@ export default function MyOrder({ user }) {
                           <TableCell key={column.id} align={column.align}>
                             <Link
                               to={"/user/orders/" + row._id}
-                              style={{ width: "100%", color: "#2f2f2f" }}
-                            >
+                              style={{ width: "100%", color: "#2f2f2f" }}>
                               {(column.format && typeof value === "boolean") ||
                               typeof value === "number"
                                 ? column.format(value)

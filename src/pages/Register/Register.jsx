@@ -129,6 +129,7 @@ const Register = ({ setAlert, setOpenAlert, setSeverity, setUserDetails }) => {
         axios
           .post(url + "/auth/register", values)
           .then((res) => {
+            console.log(res.data);
             if (res.data.status === "pending") {
               setUserDetails({
                 userId: res.data.data.userId,

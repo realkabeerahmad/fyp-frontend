@@ -6,7 +6,7 @@ const DetailsandGallery = ({ user, Pet, setPet }) => {
   return (
     <>
       <Details Pet={Pet} user={user} setPet={setPet} />
-      <Gallery Pet={Pet} setPet={setPet} />
+      <Gallery Pet={Pet} setPet={setPet} user={user} />
     </>
   );
 };

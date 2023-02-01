@@ -112,8 +112,7 @@ const Post = ({ post, user }) => {
           boxShadow: "0 2px 4px #0000001a, 0 8px 16px #0000001a",
           contain: "content",
           m: 1,
-        }}
-      >
+        }}>
         <Box
           sx={{
             p: 1,
@@ -121,8 +120,7 @@ const Post = ({ post, user }) => {
             alignItems: "center",
             position: "relative",
             borderBottom: "1px solid #cfcfcf",
-          }}
-        >
+          }}>
           <Box
             sx={{
               width: 35,
@@ -134,8 +132,7 @@ const Post = ({ post, user }) => {
               contain: "content",
               marginRight: "5px",
               backgroundColor: "black",
-            }}
-          >
+            }}>
             <img
               src={Post.user.Image}
               alt={Post.user._id}
@@ -167,8 +164,7 @@ const Post = ({ post, user }) => {
               display: "flex",
               alignItems: "center",
               justifyContent: "center",
-            }}
-          >
+            }}>
             <img
               src={Post.Image}
               alt={Post._id}
@@ -186,8 +182,7 @@ const Post = ({ post, user }) => {
             justifyContent: "space-between",
             px: 1,
             borderTop: "1px solid #cfcfcf",
-          }}
-        >
+          }}>
           <Box>{Post.likes_count} Likes</Box>
           <Box>{Post.comments_count} Opinions</Box>
         </Box>
@@ -197,12 +192,10 @@ const Post = ({ post, user }) => {
             justifyContent: "space-around",
             borderTop: "1px solid #cfcfcf",
             borderBottom: "1px solid #cfcfcf",
-          }}
-        >
+          }}>
           <Button
             sx={{ color: liked ? "#e92e4a" : "grey !important" }}
-            onClick={addLike}
-          >
+            onClick={addLike}>
             <ThumbUp sx={{ mr: 1, fontSize: 18 }} /> Like
           </Button>
           <Button onClick={handleActive} sx={{ color: "grey !important" }}>
@@ -216,8 +209,7 @@ const Post = ({ post, user }) => {
                 return (
                   <Box
                     sx={{ p: 1, borderBottom: "1px solid #cfcfcf" }}
-                    key={comment._id}
-                  >
+                    key={comment._id}>
                     <Box sx={{ display: "flex", alignItems: "center" }}>
                       <Box
                         sx={{
@@ -230,8 +222,7 @@ const Post = ({ post, user }) => {
                           contain: "content",
                           marginRight: "5px",
                           backgroundColor: "black",
-                        }}
-                      >
+                        }}>
                         <img
                           src={comment.user.Image}
                           alt=""
@@ -262,8 +253,7 @@ const Post = ({ post, user }) => {
                 display: "flex",
                 alignItems: "center",
                 justifyContent: "space-around",
-              }}
-            >
+              }}>
               <TextField
                 variant="standard"
                 sx={{ width: "80%" }}
@@ -275,8 +265,7 @@ const Post = ({ post, user }) => {
               <Button
                 disabled={!comment.content}
                 color="error"
-                onClick={addComment}
-              >
+                onClick={addComment}>
                 <Send />
               </Button>
             </Box>

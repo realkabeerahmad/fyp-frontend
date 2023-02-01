@@ -36,14 +36,14 @@ const Login = ({
         .then((res) => {
           setUser(res.data.user);
           if (res.data.status === "success") {
-            setAlert("Welcome!!!");
-            setOpenAlert(true);
-            setSeverity("success");
+            alert("Welcome!!!");
+            // setOpenAlert(true);
+            // setSeverity("success");
             setLogin(true);
             Navigate("/my_pets");
 
             const userId = { userId: res.data.user._id };
-            console.log(userId);
+            // console.log(userId);
             axios
               .post(url + "/shop/cart/new", userId)
               .then((res) => {
@@ -77,15 +77,15 @@ const Login = ({
             // setAlert(res.data.message);
             // setOpenAlert(true);
             // setSeverity("error");
-            // console.log("Here");
+            console.log(res.data);
             // return false;
           }
         })
         .catch((err) => console.log(err));
     } else {
-      setAlert("Please Enter Email and Password");
-      setOpenAlert(true);
-      setSeverity("error");
+      alert("Please Enter Email and Password");
+      // setOpenAlert(true);
+      // setSeverity("error");
     }
   };
   return (
@@ -127,8 +127,7 @@ const Login = ({
             onClick={login}
             sx={{ width: 415, m: 1 }}
             color="success"
-            variant="contained"
-          >
+            variant="contained">
             LOGIN
           </Button>
           <Divider sx={{ width: 415, m: 1 }}>OR</Divider>

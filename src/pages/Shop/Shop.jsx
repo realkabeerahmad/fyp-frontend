@@ -6,25 +6,18 @@ import {
   Box,
   Button,
   FormControl,
-  Grid,
   InputLabel,
   MenuItem,
   Select,
   SwipeableDrawer,
   TextField,
 } from "@mui/material";
-import {
-  CompareArrows,
-  CompareArrowsOutlined,
-  FilterList,
-  Search,
-} from "@mui/icons-material";
-import { LoadingButton } from "@mui/lab";
+import { CompareArrowsOutlined, FilterList, Search } from "@mui/icons-material";
 import url from "../../apiCalls/api";
 
 // ----------------------------------------------------------
 
-const Shop = ({ setProduct }) => {
+const Shop = ({ setProduct, products }) => {
   const [values, setValues] = useState({
     text: "",
     category: "",
@@ -51,7 +44,7 @@ const Shop = ({ setProduct }) => {
     setState({ ...state, [anchor]: open });
   };
   // -------------------------------------
-  const [Products, setProducts] = useState([]);
+  const [Products, setProducts] = useState(products);
   useEffect(() => {
     fetchItem();
   }, []);
@@ -116,16 +109,17 @@ const Shop = ({ setProduct }) => {
           display: "flex",
           alignItems: "center",
           justifyContent: "center",
-        }}
-      >
+          position: "relative",
+        }}>
         <Box
           sx={{
             width: "20%",
             display: "flex",
             alignItems: "center",
             justifyContent: "center",
-          }}
-        >
+            position: "absolute",
+            left: 30,
+          }}>
           <Button color="error" onClick={toggleDrawer("left", true)}>
             <FilterList />
             &nbsp; &nbsp;Filter
@@ -135,8 +129,7 @@ const Shop = ({ setProduct }) => {
           anchor={"left"}
           open={state["left"]}
           onClose={toggleDrawer("left", false)}
-          onOpen={toggleDrawer("left", true)}
-        >
+          onOpen={toggleDrawer("left", true)}>
           <Box
             sx={{
               width: "350px",
@@ -145,8 +138,7 @@ const Shop = ({ setProduct }) => {
               alignItems: "center",
               justifyContent: "center",
               p: 2,
-            }}
-          >
+            }}>
             <h1 style={{ color: "#e92e4a" }}>Filters</h1>
             <FormControl sx={{ width: "80%", m: 2 }} color="success">
               <InputLabel id="type" color="success">
@@ -155,8 +147,7 @@ const Shop = ({ setProduct }) => {
               <Select
                 label="Category"
                 value={values.category}
-                onChange={handleChange("category")}
-              >
+                onChange={handleChange("category")}>
                 <MenuItem value="Food">Food</MenuItem>
                 <MenuItem value="Accessory">Accessory</MenuItem>
                 <MenuItem value="Toys">Toys</MenuItem>
@@ -171,35 +162,31 @@ const Shop = ({ setProduct }) => {
                 alignItems: "center",
                 justifyContent: "center",
               }}
-              color="success"
-            >
+              color="success">
               <TextField
                 label="Price From"
                 sx={{ width: "33%", m: 2 }}
                 color="success"
                 value={values.min}
-                onChange={handleChange("min")}
-              ></TextField>
+                onChange={handleChange("min")}></TextField>
               <CompareArrowsOutlined />
               <TextField
                 label="Price To"
                 sx={{ width: "33%", m: 2 }}
                 color="success"
                 value={values.max}
-                onChange={handleChange("max")}
-              ></TextField>
+                onChange={handleChange("max")}></TextField>
             </Box>
             <Button
               sx={{ width: "80%", m: 1 }}
               color="success"
               variant="contained"
-              onClick={filter}
-            >
+              onClick={filter}>
               Filter
             </Button>
           </Box>
         </SwipeableDrawer>
-        <Box sx={{ width: "80%", display: "flex" }}>
+        <Box sx={{ width: "80%", display: "flex", justifyContent: "center" }}>
           <TextField
             variant="outlined"
             color="error"
@@ -214,9 +201,8 @@ const Shop = ({ setProduct }) => {
           <Button
             color="error"
             variant="contained"
-            sx={{ width: 50, ml: "-65px" }}
-            onClick={searchItem}
-          >
+            sx={{ width: 50, ml: "-65px", boxShadow: "none" }}
+            onClick={searchItem}>
             <Search />
           </Button>
           {/* </form> */}
@@ -229,15 +215,13 @@ const Shop = ({ setProduct }) => {
           justifyContent: "center",
           width: "100%",
           p: 2,
-        }}
-      >
+        }}>
         <Box
           sx={{
             display: "flex",
             flexWrap: "wrap",
             justifyContent: "center",
-          }}
-        >
+          }}>
           {Products.length > 0 ? (
             <Box
               sx={{
@@ -247,15 +231,13 @@ const Shop = ({ setProduct }) => {
                 gridGap: "25px",
                 gridAutoRows: "minmax(100px, auto)",
                 gridAutoFlow: "dense",
-              }}
-            >
+              }}>
               {Products.map((Product) => {
                 return (
                   <ShopCard
                     key={Product._id}
                     Product={Product}
-                    setProduct={setProduct}
-                  ></ShopCard>
+                    setProduct={setProduct}></ShopCard>
                 );
               })}
             </Box>

@@ -8,8 +8,19 @@ import url from "../../apiCalls/api";
 
 // -------------------------------------------------
 
-const CartItem = ({ product, cartId, setCart }) => {
+const CartItem = ({ product, cartId, setCart, setProduct }) => {
   var quantity = product.quantity;
+  const getProduct = async () => {
+    await axios
+      .get(url + `/shop/show${product._id}`)
+      .then((res) => {
+        setProduct(res.data.data);
+        console.log(res.data);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  };
   const decr = () => {
     if (quantity === 1) {
       return false;
@@ -128,6 +139,7 @@ const CartItem = ({ product, cartId, setCart }) => {
             <Link
               to={"/product/" + product._id}
               style={{ color: "black", width: "100%" }}
+              onClick={async () => await getProduct()}
             >
               <Box
                 sx={{

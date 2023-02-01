@@ -1,4 +1,10 @@
-import { AddAPhoto, AddCircle, CheckCircle } from "@mui/icons-material";
+import {
+  AddAPhoto,
+  AddCircle,
+  CheckCircle,
+  Search,
+  Close,
+} from "@mui/icons-material";
 import { Box, Button, IconButton, Modal, TextField } from "@mui/material";
 import React, { useEffect, useState } from "react";
 import axios from "axios";
@@ -14,6 +20,7 @@ const Community = ({ user }) => {
     userId: user ? user._id : "",
     Image: "",
     content: "",
+    text: "",
   });
   const [open, setOpen] = useState(false);
   const [_image, setimage] = useState();
@@ -97,6 +104,7 @@ const Community = ({ user }) => {
   const fetchPosts = () => {
     axios.get(url + "/community/showAllPosts").then((res) => {
       if (res.data.status === "success") {
+        console.log(res.data.data);
         setPosts(res.data.data);
       }
     });
@@ -106,16 +114,87 @@ const Community = ({ user }) => {
 
     return () => {};
   }, []);
+  const searchItem = () => {
+    if (!values.text) {
+      return false;
+    } else {
+      const data = { searched_text: values.text };
+      axios
+        .post(url + "/community/search", data)
+        .then((res) => {
+          console.log(res.data);
+          setPosts(res.data.posts);
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+    }
+  };
 
   return (
     <>
       <Box
         sx={{
+          width: "100%",
+          p: 2,
+          backgroundColor: "white",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+        }}>
+        <Box
+          sx={{
+            width: "80%",
+            display: "flex",
+            // alignItems: "center",
+            justifyContent: "center",
+          }}>
+          <TextField
+            variant="outlined"
+            color="error"
+            sx={{
+              width: "60%",
+            }}
+            type="text"
+            placeholder="Search"
+            onChange={handleChange("text")}
+            value={values.text}
+          />
+          {values.text ? (
+            <Button
+              color="error"
+              // variant="contained"
+              sx={{
+                width: 50,
+                ml: "-129px",
+                boxShadow: "none",
+                color: "GrayText",
+              }}
+              onClick={() => {
+                setValues({ text: "" });
+                fetchPosts();
+              }}>
+              <Close />
+            </Button>
+          ) : (
+            <></>
+          )}
+          <Button
+            color="error"
+            variant="contained"
+            sx={{ width: 50, ml: values.text ? 0 : "-65px", boxShadow: "none" }}
+            onClick={searchItem}>
+            <Search />
+          </Button>
+          {/* </form> */}
+        </Box>
+      </Box>
+      <Box
+        sx={{
           display: "flex",
           flexDirection: "column",
           alignItems: "center",
-        }}
-      >
+        }}>
         <Box
           sx={{
             width: 400,
@@ -125,8 +204,7 @@ const Community = ({ user }) => {
             p: 2,
             m: 1,
             boxShadow: "0 2px 4px #0000001a, 0 8px 16px #0000001a",
-          }}
-        >
+          }}>
           <TextField
             // color="success"
             variant="standard"
@@ -146,15 +224,20 @@ const Community = ({ user }) => {
             color="error"
             onClick={addPost}
             disabled={!values.content ? true : false}
-            loading={loading}
-          >
+            loading={loading}>
             <AddCircle />
           </IconButton>
         </Box>
         {/* Post */}
-        {posts.map((post) => {
-          return <Post key={post._id} post={post} user={user} />;
-        })}
+        {posts ? (
+          posts.map((post) => {
+            return <Post key={post._id} post={post} user={user} />;
+          })
+        ) : (
+          <>
+            <Box>No Posts Available</Box>
+          </>
+        )}
       </Box>
       <Modal open={open} onClose={handleClose}>
         <div className="add">
@@ -188,8 +271,7 @@ const Community = ({ user }) => {
                   fontSize: 18,
                 }}
                 onClick={handleClose}
-                loading={loading}
-              >
+                loading={loading}>
                 <CheckCircle sx={{ mr: 1 }} />
                 Done
               </LoadingButton>

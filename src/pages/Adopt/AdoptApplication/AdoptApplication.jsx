@@ -159,8 +159,7 @@ const AdoptApplication = ({ user, Pet, setUser }) => {
         alignItems: "center",
         justifyContent: "center",
         height: "calc(100vh - 70px)",
-      }}
-    >
+      }}>
       <IconButton
         sx={{
           color: "#e92e4a",
@@ -168,16 +167,14 @@ const AdoptApplication = ({ user, Pet, setUser }) => {
           position: "absolute",
           top: 10,
           left: 10,
-        }}
-      >
+        }}>
         <ArrowLeft />
       </IconButton>
       <Box sx={{ width: "80%" }}>
         <form
           onSubmit={handleSubmit}
           encType="multipart/form-data"
-          autoComplete="off"
-        >
+          autoComplete="off">
           <h1 style={{ color: "#e92e4a", textAlign: "center" }}>
             Pet Adoption Application
           </h1>
@@ -251,8 +248,7 @@ const AdoptApplication = ({ user, Pet, setUser }) => {
                   color="success"
                   value={user.gender ? user.gender : values.gender}
                   onChange={handleChange("gender")}
-                  required
-                >
+                  required>
                   <MenuItem value="Male">Male</MenuItem>
                   <MenuItem value="Female">Female</MenuItem>
                 </Select>
@@ -288,19 +284,21 @@ const AdoptApplication = ({ user, Pet, setUser }) => {
                 />
               </FormControl>
             </div>
+            <Box sx={{ my: 2, color: "#e92e4a" }}>
+              * Your application will be sent to the Shelter and Shelter Will
+              Contact you for further processing
+            </Box>
             <Box
               sx={{
                 display: "flex",
                 alignItems: "center",
                 justifyContent: "center",
-              }}
-            >
+              }}>
               <Button
                 variant="contained"
                 color="success"
                 sx={{ width: "45%", m: 1 }}
-                onClick={handleSubmit}
-              >
+                onClick={handleSubmit}>
                 Submit
               </Button>
             </Box>

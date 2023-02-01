@@ -6,7 +6,7 @@ import { ShoppingCart } from "@mui/icons-material";
 
 // --------------------------------------------------------
 
-const Cart = ({ cart, setCart }) => {
+const Cart = ({ cart, setCart, setProduct }) => {
   const Navigate = useNavigate();
   var subTotal = 0;
   var Total = 0;
@@ -52,7 +52,12 @@ const Cart = ({ cart, setCart }) => {
         {cart ? (
           cart.products.map((product) => {
             return (
-              <CartItem product={product} cartId={cart._id} setCart={setCart} />
+              <CartItem
+                product={product}
+                cartId={cart._id}
+                setCart={setCart}
+                setProduct={setProduct}
+              />
             );
           })
         ) : (

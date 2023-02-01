@@ -28,6 +28,7 @@ import { useNavigate } from "react-router";
 // --------------------------------------------------------
 import { IMaskInput } from "react-imask";
 import PropTypes from "prop-types";
+import url from "../../apiCalls/api";
 // ======================================================
 const TextMaskCustom = React.forwardRef(function TextMaskCustom(props, ref) {
   const { onChange, ...other } = props;
@@ -158,32 +159,33 @@ const CheckOut = ({
       !values.fullName ||
       !values.phoneNumber
     ) {
-      setAlert("All Fields Are Required");
-      setSeverity("info");
-      setOpenAlert(true);
+      alert("All Fields Are Required");
+      // setSeverity("info");
+      // setOpenAlert(true);
       return false;
     }
     const data = {
       userId: user._id,
-      Name: user.firstName + " " + user.lastName,
+      Name: values.fullName,
       Address: values.address,
       Phone: values.phoneNumber,
       ShippingFee: shipping,
       TotalAmount: subTotal,
       products: cart.products,
-      Payment: values.Payment === "Card Payment" ? "Cleared" : "Pending",
+      Payment:
+        values.Payment === "Card Payment" ? "Cleared" : "Cash on Delivery",
       cartId: cart._id,
     };
     axios
-      .post("http://localhost:8000/shop/checkOut", data)
+      .post(url + "/shop/checkOut", data)
       .then((res) => {
         // alert();
-        setAlert(res.data.status);
-        setSeverity("success");
-        setOpenAlert(true);
+        alert(res.data.status);
+        // setSeverity("success");
+        // setOpenAlert(true);
         const data = { _id: cart._id };
         axios
-          .post("http://localhost:8000/shop/getCartById", data)
+          .post(url + "/shop/cart/show/id", data)
           .then((r) => {
             // alert(r.data.message ? r.data.message : r.data.error);
             setCart(r.data.cart);
@@ -213,16 +215,14 @@ const CheckOut = ({
             display: "flex",
             alignItems: "center",
             justifyContent: "center",
-          }}
-        >
+          }}>
           <h2
             style={{
               color: "#e92e4a",
               display: "flex",
               alignItems: "center",
               justifyContent: "center",
-            }}
-          >
+            }}>
             <ShoppingCartCheckout sx={{ mr: 2 }} />
             Check Out
           </h2>
@@ -239,8 +239,7 @@ const CheckOut = ({
             // display: "flex",
             // alignItems: "center",
             // justifyContent: "center",
-          }}
-        >
+          }}>
           <TextField
             label="Full Name"
             variant="standard"
@@ -258,8 +257,7 @@ const CheckOut = ({
               display: "inline-flex",
               alignItems: "center",
               justifyContent: "center",
-            }}
-          >
+            }}>
             <TextField
               label="Address"
               variant="standard"
@@ -294,8 +292,7 @@ const CheckOut = ({
             <FormControl
               component="fieldset"
               sx={{ width: "100%", m: 1 }}
-              color="success"
-            >
+              color="success">
               <FormLabel color="success">Payment Method</FormLabel>
               <RadioGroup
                 name="spacing"
@@ -303,8 +300,7 @@ const CheckOut = ({
                 value={values.Payment}
                 onChange={handleChange("Payment")}
                 row
-                color="success"
-              >
+                color="success">
                 {["Cash On Delivery", "Card Payment"].map((value) => (
                   <FormControlLabel
                     color="success"
@@ -383,8 +379,7 @@ const CheckOut = ({
           justifyContent: "space-between",
           position: "relative",
           boxShadow: "0 2px 4px #0000001a, 0 8px 16px #0000001a",
-        }}
-      >
+        }}>
         <h2> Order Summary</h2>
         <Box>
           <Box
@@ -394,8 +389,7 @@ const CheckOut = ({
               display: "flex",
               flexDirection: "row",
               justifyContent: "space-between",
-            }}
-          >
+            }}>
             <h3>Sub Total:</h3>
             <p>PKR {subTotal}</p>
           </Box>
@@ -406,8 +400,7 @@ const CheckOut = ({
               display: "flex",
               flexDirection: "row",
               justifyContent: "space-between",
-            }}
-          >
+            }}>
             <h3>Shipping fee:</h3>
             <p>PKR {shipping}</p>
           </Box>
@@ -418,8 +411,7 @@ const CheckOut = ({
               display: "flex",
               flexDirection: "row",
               justifyContent: "space-between",
-            }}
-          >
+            }}>
             <h3>Total:</h3>
             <p>PKR {Total}</p>
           </Box>
@@ -435,9 +427,8 @@ const CheckOut = ({
               color="success"
               variant="contained"
               fullWidth
-              onClick={pay}
-              sx={{ position: "absolute", bottom: 0, left: 0 }}
-            >
+              onClick={checkOut}
+              sx={{ position: "absolute", bottom: 0, left: 0 }}>
               Pay and Proceed
             </Button>
           ) : (
@@ -447,8 +438,7 @@ const CheckOut = ({
               fullWidth
               onClick={checkOut}
               disabled={values.Payment != "Cash On Delivery" ? true : false}
-              sx={{ position: "absolute", bottom: 0, left: 0 }}
-            >
+              sx={{ position: "absolute", bottom: 0, left: 0 }}>
               Proceed
             </Button>
           )}

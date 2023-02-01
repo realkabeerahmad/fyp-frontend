@@ -61,3 +61,15 @@ input.quantity[type="number"] {
 .PaymentForm input {
   border: 1px solid #c2c2c2;
 }
+.Hover{
+  box-shadow: none !important;
+  -webkit-box-shadow: none !important;
+  -moz-box-shadow: none !important;
+  border: none !important;
+
+}
+.Hover:hover{
+  box-shadow: 0 2px 4px #0000001a, 0 8px 16px #0000001a !important;
+  -webkit-box-shadow: 0 2px 4px #0000001a, 0 8px 16px #0000001a !important;
+  -moz-box-shadow: 0 2px 4px #0000001a, 0 8px 16px #0000001a !important;
+}

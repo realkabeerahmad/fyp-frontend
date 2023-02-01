@@ -14,7 +14,7 @@ import DetailsandGallery from "./pages/Pet/DetailsandGallery/DetailsandGallery";
 import ForgetPass from "./pages/ForgetPass/ForgetPass";
 import VaccinationAndMedical from "./pages/Pet/VaccinationAndMedical/VaccinationAndMedical";
 import { Alert, Collapse, IconButton } from "@mui/material";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Otp from "./pages/Otp/Otp";
 import MealTime from "./pages/Pet/MealTime/MealTime";
 import WalkTime from "./pages/Pet/WalkTime/WalkTime";
@@ -31,6 +31,8 @@ import { Elements } from "@stripe/react-stripe-js";
 import History from "./components/Vaccination/History";
 import Application from "./pages/Application/Application";
 import WishList from "./pages/WishList/WishList";
+import axios from "axios";
+import url from "./apiCalls/api";
 // -------------------------------------------------------------------------
 // -------------------------------------------------------------------------
 // -------------------------------------------------------------------------
@@ -45,6 +47,7 @@ function App() {
   // ----------------------------------------------------------------
   // ----------------------------------------------------------------
   const [Product, setProduct] = useState({});
+  const [Products, setProducts] = useState([]);
   // ----------------------------------------------------------------
   const [pet, setPet] = useState({});
   // const [Pets, setPets] = useState({});
@@ -62,6 +65,20 @@ function App() {
       setOpenAlert(false);
     }, 5000);
   }
+  useEffect(() => {
+    fetchItem();
+  }, []);
+  // ----------------------------------------
+  const fetchItem = () => {
+    axios
+      .get(url + "/shop/show/all")
+      .then((res) => {
+        setProducts(res.data.products);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  };
   const LoginComponent = (
     <Login
       setAlert={setAlert}
@@ -117,13 +134,11 @@ function App() {
                   size="small"
                   onClick={() => {
                     setOpenAlert(false);
-                  }}
-                >
+                  }}>
                   <i className="fa fa-times"></i>
                 </IconButton>
               }
-              sx={{ mb: 2 }}
-            >
+              sx={{ mb: 2 }}>
               {alert}
             </Alert>
           </Collapse>
@@ -151,30 +166,54 @@ function App() {
                   login ? (
                     <User user={user} setUser={setUser} />
                   ) : (
-                    LoginComponent
+                    <Login
+                      setAlert={setAlert}
+                      setOpenAlert={setOpenAlert}
+                      setSeverity={setSeverity}
+                      setLogin={setLogin}
+                      setUser={setUser}
+                      user={user}
+                      setCart={setCart}
+                      setUserDetails={setUserDetails}
+                    />
                   )
-                }
-              ></Route>
+                }></Route>
               <Route
                 path="/user/orders"
                 element={
                   login ? (
                     <MyOrder user={user} setUser={setUser} />
                   ) : (
-                    LoginComponent
+                    <Login
+                      setAlert={setAlert}
+                      setOpenAlert={setOpenAlert}
+                      setSeverity={setSeverity}
+                      setLogin={setLogin}
+                      setUser={setUser}
+                      user={user}
+                      setCart={setCart}
+                      setUserDetails={setUserDetails}
+                    />
                   )
-                }
-              ></Route>
+                }></Route>
               <Route
                 path="/user/wishlist"
                 element={
                   login ? (
                     <WishList user={user} setUser={setUser} />
                   ) : (
-                    LoginComponent
+                    <Login
+                      setAlert={setAlert}
+                      setOpenAlert={setOpenAlert}
+                      setSeverity={setSeverity}
+                      setLogin={setLogin}
+                      setUser={setUser}
+                      user={user}
+                      setCart={setCart}
+                      setUserDetails={setUserDetails}
+                    />
                   )
-                }
-              ></Route>
+                }></Route>
               {/* My Pets */}
               {/* ----------------------------------------- */}
               {/* ----------------------------------------- */}
@@ -186,14 +225,37 @@ function App() {
                   login ? (
                     <MyPets user={user} setPet={setPet} />
                   ) : (
-                    LoginComponent
+                    <Login
+                      setAlert={setAlert}
+                      setOpenAlert={setOpenAlert}
+                      setSeverity={setSeverity}
+                      setLogin={setLogin}
+                      setUser={setUser}
+                      user={user}
+                      setCart={setCart}
+                      setUserDetails={setUserDetails}
+                    />
                   )
-                }
-              ></Route>
+                }></Route>
               {/* Add Pet Form */}
               <Route
                 path="/my_pets/add_pet"
-                element={login ? <AddPet user={user} /> : LoginComponent}
+                element={
+                  login ? (
+                    <AddPet user={user} />
+                  ) : (
+                    <Login
+                      setAlert={setAlert}
+                      setOpenAlert={setOpenAlert}
+                      setSeverity={setSeverity}
+                      setLogin={setLogin}
+                      setUser={setUser}
+                      user={user}
+                      setCart={setCart}
+                      setUserDetails={setUserDetails}
+                    />
+                  )
+                }
               />
               {/* Pet Screen */}
               <Route path={"/my_pets/" + pet._id} element={<Pet Pet={pet} />}>
@@ -201,26 +263,23 @@ function App() {
                   index
                   element={
                     <DetailsandGallery user={user} Pet={pet} setPet={setPet} />
-                  }
-                ></Route>
+                  }></Route>
                 <Route
                   path="details_and_gallery"
                   element={
                     <DetailsandGallery Pet={pet} setPet={setPet} user={user} />
-                  }
-                ></Route>
+                  }></Route>
                 <Route
                   path="vaccination_and_medical_details"
-                  element={<VaccinationAndMedical Pet={pet} setPet={setPet} />}
-                ></Route>
+                  element={
+                    <VaccinationAndMedical Pet={pet} setPet={setPet} />
+                  }></Route>
                 <Route
                   path="meal_timings"
-                  element={<MealTime Pet={pet} setPet={setPet} />}
-                ></Route>
+                  element={<MealTime Pet={pet} setPet={setPet} />}></Route>
                 <Route
                   path="walk_timings"
-                  element={<WalkTime Pet={pet} setPet={setPet} />}
-                ></Route>
+                  element={<WalkTime Pet={pet} setPet={setPet} />}></Route>
                 <Route
                   path="vaccination_history"
                   element={
@@ -228,12 +287,12 @@ function App() {
                       history={pet.vaccination_history}
                       page={"vaccination"}
                     />
-                  }
-                ></Route>
+                  }></Route>
                 <Route
                   path="vet_history"
-                  element={<History history={pet.vet_history} page={"vet"} />}
-                ></Route>
+                  element={
+                    <History history={pet.vet_history} page={"vet"} />
+                  }></Route>
               </Route>
 
               {/* Shop Routes */}
@@ -243,31 +302,52 @@ function App() {
               {/* ----------------------------------------- */}
               <Route
                 path="/shop"
-                element={<Shop setProduct={setProduct} />}
-              ></Route>
+                element={
+                  <Shop setProduct={setProduct} products={Products} />
+                }></Route>
               <Route
                 path="/shop/cart"
                 element={
                   login ? (
-                    <Cart cart={cart} setCart={setCart} />
+                    <Cart
+                      cart={cart}
+                      setCart={setCart}
+                      setProduct={setProduct}
+                    />
                   ) : (
-                    LoginComponent
+                    <Login
+                      setAlert={setAlert}
+                      setOpenAlert={setOpenAlert}
+                      setSeverity={setSeverity}
+                      setLogin={setLogin}
+                      setUser={setUser}
+                      user={user}
+                      setCart={setCart}
+                      setUserDetails={setUserDetails}
+                    />
                   )
-                }
-              ></Route>
+                }></Route>
 
               <Route
                 path="/shop/checkOut"
                 element={
                   login && cart ? (
                     // <Elements stripe={stripePromise}>
-                    <CheckOut cart={cart} setCart={setCart} user={user} />
+                    <CheckOut
+                      cart={cart}
+                      setCart={setCart}
+                      user={user}
+                      setProduct={setProduct}
+                    />
                   ) : (
                     // </Elements>
-                    <Cart cart={cart} setCart={setCart} />
+                    <Cart
+                      cart={cart}
+                      setCart={setCart}
+                      setProduct={setProduct}
+                    />
                   )
-                }
-              ></Route>
+                }></Route>
               <Route
                 path={`/product/${Product._id}`}
                 element={
@@ -279,8 +359,7 @@ function App() {
                     setUser={setUser}
                     login={login}
                   />
-                }
-              ></Route>
+                }></Route>
 
               {/* Adopt */}
               {/* ----------------------------------------- */}
@@ -292,8 +371,7 @@ function App() {
                 user.isShelter ? (
                   <Route
                     path="/shelter/applications"
-                    element={<Application user={user} />}
-                  ></Route>
+                    element={<Application user={user} />}></Route>
                 ) : (
                   <></>
                 )
@@ -309,8 +387,7 @@ function App() {
                     setUser={setUser}
                     login={login}
                   />
-                }
-              ></Route>
+                }></Route>
               {/* Auth */}
               {/* ----------------------------------------- */}
               {/* ----------------------------------------- */}
@@ -322,14 +399,21 @@ function App() {
                   login ? (
                     <AdoptApplication Pet={pet} user={user} setUser={setUser} />
                   ) : (
-                    LoginComponent
+                    <Login
+                      setAlert={setAlert}
+                      setOpenAlert={setOpenAlert}
+                      setSeverity={setSeverity}
+                      setLogin={setLogin}
+                      setUser={setUser}
+                      user={user}
+                      setCart={setCart}
+                      setUserDetails={setUserDetails}
+                    />
                   )
-                }
-              ></Route>
+                }></Route>
               <Route
                 path="/community"
-                element={<Community user={user} />}
-              ></Route>
+                element={<Community user={user} />}></Route>
               <Route
                 exact
                 path="/login"
@@ -361,8 +445,7 @@ function App() {
                   ) : (
                     <ErrorPage />
                   )
-                }
-              ></Route>
+                }></Route>
               <Route
                 path="/register"
                 element={
@@ -372,8 +455,7 @@ function App() {
                     setSeverity={setSeverity}
                     setUserDetails={setUserDetails}
                   />
-                }
-              ></Route>
+                }></Route>
               <Route path="*" element={<ErrorPage />}></Route>
             </Routes>
           </div>
